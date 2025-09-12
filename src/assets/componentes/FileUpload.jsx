@@ -6,6 +6,8 @@ const FileUploader = () => {
   const [clientName, setClientName] = useState("");
   const [status, setStatus] = useState("");
 
+  const API_URL = import.meta.env.VITE_API_URL;
+
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
     const allowedTypes = [
@@ -35,7 +37,7 @@ const FileUploader = () => {
     formData.append("clientName", clientName);
 
     try {
-      const response = await fetch("http://localhost:3001/upload", {
+      const response = await fetch(`${API_URL}/upload`, {
         method: "POST",
         body: formData,
       });
