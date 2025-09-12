@@ -95,7 +95,7 @@ const FileUploader = () => {
           >
             Enviar pedido
           </button>
-
+            console.log("API_URL:", import.meta.env.VITE_API_URL);
           {status && (
             <p className="text-center text-sm text-gray-600 mt-4">{status}</p>
           )}
