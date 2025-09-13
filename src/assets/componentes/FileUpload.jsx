@@ -75,7 +75,7 @@ const FileUploader = () => {
             className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-violet-400"
           >
             <option value="">Seleccioná tipo de papel</option>
-            <option value="A4">A4</option>
+            <option value="Foto Fino">Foto Gino</option>
             <option value="Fotográfico">Fotográfico</option>
             <option value="Reciclado">Reciclado</option>
           </select>
