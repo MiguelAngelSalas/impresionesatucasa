@@ -75,9 +75,11 @@ const FileUploader = () => {
             className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-violet-400"
           >
             <option value="">Seleccioná tipo de papel</option>
-            <option value="Foto Fino">Foto Gino</option>
-            <option value="Fotográfico">Fotográfico</option>
-            <option value="Reciclado">Reciclado</option>
+            <option value="fotoFino">Foto fino 140 Grs</option>
+            <option value="ffotoGrueso">Foto Grueso 200 Grs</option>
+            <option value="mateFino">Mate fino 110 Grs</option>
+            <option value="mateGrueso">Mate grueso 210 Grs</option>
+            <option value="mateGruesoBiFaz">Mate grueso bifaz 200 Grs</option>
           </select>
 
           <input
