@@ -76,7 +76,7 @@ const FileUploader = () => {
           >
             <option value="">Seleccioná tipo de papel</option>
             <option value="fotoFino">Foto fino 140 Grs</option>
-            <option value="ffotoGrueso">Foto Grueso 200 Grs</option>
+            <option value="fotoGrueso">Foto Grueso 200 Grs</option>
             <option value="mateFino">Mate fino 110 Grs</option>
             <option value="mateGrueso">Mate grueso 210 Grs</option>
             <option value="mateGruesoBiFaz">Mate grueso bifaz 200 Grs</option>
