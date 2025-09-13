@@ -64,7 +64,7 @@ const FileUploader = () => {
         <div className="space-y-4">
           <input
             type="file"
-            accept=".pdf,.doc,.docx"
+            accept=".pdf,"
             onChange={handleFileChange}
             className="block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-white file:bg-violet-600 hover:file:bg-violet-700"
           />
