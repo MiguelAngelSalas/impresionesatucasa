@@ -25,14 +25,23 @@ const FileUploader = () => {
     }
   };
 
+  const renameFileWithPaperType = (originalFile, paperType) => {
+    const extension = originalFile.name.split(".").pop();
+    const baseName = originalFile.name.replace(/\.[^/.]+$/, "");
+    const newName = `${baseName}-${paperType}.${extension}`;
+    return new File([originalFile], newName, { type: originalFile.type });
+  };
+
   const handleUpload = async () => {
     if (!file || !paperType) {
       setStatus("Faltan datos: seleccioná archivo y tipo de papel.");
       return;
     }
 
+    const renamedFile = renameFileWithPaperType(file, paperType);
+
     const formData = new FormData();
-    formData.append("file", file);
+    formData.append("file", renamedFile);
     formData.append("paperType", paperType);
     formData.append("clientName", clientName);
 
