@@ -1,4 +1,3 @@
-// src/FileUploader.jsx
 import React, { useState } from "react";
 
 const FileUploader = () => {
