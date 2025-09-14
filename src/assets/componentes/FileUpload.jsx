@@ -8,23 +8,21 @@ const FileUploader = () => {
 
   const API_URL = import.meta.env.VITE_API_URL;
 
+  // Manejo de cambio de archivo
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
-    const allowedTypes = [
-      "application/pdf",
-      "application/msword",
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-    ];
+    const allowedTypes = ["application/pdf"];
 
     if (selectedFile && allowedTypes.includes(selectedFile.type)) {
       setFile(selectedFile);
       setStatus("");
     } else {
       setFile(null);
-      setStatus("Tipo de archivo no permitido. Solo PDF, DOC y DOCX.");
+      setStatus("Tipo de archivo no permitido. Solo PDF.");
     }
   };
 
+  // Renombrar archivo con el tipo de papel
   const renameFileWithPaperType = (originalFile, paperType) => {
     const extension = originalFile.name.split(".").pop();
     const baseName = originalFile.name.replace(/\.[^/.]+$/, "");
@@ -32,6 +30,7 @@ const FileUploader = () => {
     return new File([originalFile], newName, { type: originalFile.type });
   };
 
+  // Subida de archivo
   const handleUpload = async () => {
     if (!file || !paperType) {
       setStatus("Faltan datos: seleccioná archivo y tipo de papel.");
@@ -75,12 +74,12 @@ const FileUploader = () => {
           <div>
             <input
               type="file"
-              accept=".pdf,.doc,.docx"
+              accept=".pdf"
               onChange={handleFileChange}
               className="block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-white file:bg-violet-600 hover:file:bg-violet-700"
             />
             <p className="text-xs text-gray-500 mt-1">
-              Aceptamos archivos PDF, DOC y DOCX. Tamaño máximo: 20MB.
+              Aceptamos archivos PDF. Tamaño máximo: 20MB.
             </p>
           </div>
 
