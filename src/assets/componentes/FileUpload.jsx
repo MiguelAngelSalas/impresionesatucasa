@@ -1,4 +1,9 @@
+// src/FileUploader.jsx
 import React, { useState } from "react";
+import * as pdfjsLib from "pdfjs-dist/build/pdf";
+import pdfjsWorker from "pdfjs-dist/build/pdf.worker.entry";
+
+pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
 const FileUploader = () => {
   const [file, setFile] = useState(null);
@@ -6,11 +11,10 @@ const FileUploader = () => {
   const [clientName, setClientName] = useState("");
   const [status, setStatus] = useState("");
   const [totalPages, setTotalPages] = useState(null);
-  const [archivoURL, setArchivoURL] = useState("");
 
   const API_URL = import.meta.env.VITE_API_URL;
 
-  const handleFileChange = (e) => {
+  const handleFileChange = async (e) => {
     const selectedFile = e.target.files[0];
     if (!selectedFile) return;
 
@@ -23,7 +27,20 @@ const FileUploader = () => {
 
     setFile(selectedFile);
     setStatus("");
-    setTotalPages(null);
+
+    // Leer PDF y contar páginas
+    const fileReader = new FileReader();
+    fileReader.onload = async function() {
+      const typedArray = new Uint8Array(this.result);
+      try {
+        const pdf = await pdfjsLib.getDocument(typedArray).promise;
+        setTotalPages(pdf.numPages);
+      } catch (err) {
+        console.error("Error al leer PDF:", err);
+        setTotalPages(null);
+      }
+    };
+    fileReader.readAsArrayBuffer(selectedFile);
   };
 
   const handleUpload = async () => {
@@ -45,8 +62,6 @@ const FileUploader = () => {
 
       if (response.ok) {
         const result = await response.json();
-        setTotalPages(result.totalPages);
-        setArchivoURL(result.archivoURL);
         setStatus(`Pedido recibido correctamente`);
       } else {
         const error = await response.json();
@@ -67,16 +82,19 @@ const FileUploader = () => {
 
         <div className="space-y-4">
           {/* File input */}
-          <div>
+          <div className="relative">
             <input
               type="file"
               accept=".pdf"
               onChange={handleFileChange}
               className="block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-white file:bg-violet-600 hover:file:bg-violet-700"
             />
-            <p className="text-xs text-gray-500 mt-1">
-              Solo archivos PDF. Tamaño máximo: 20MB.
-            </p>
+            {/* Mostrar número de páginas al costado */}
+            {totalPages !== null && (
+              <span className="absolute right-3 top-2 text-gray-700 font-semibold">
+                {totalPages} páginas
+              </span>
+            )}
           </div>
 
           {/* Paper type */}
@@ -118,23 +136,6 @@ const FileUploader = () => {
 
           {/* Status message */}
           {status && <p className="text-center text-sm text-gray-600 mt-4">{status}</p>}
-
-          {/* Mostrar total de páginas y link */}
-          {totalPages !== null && (
-            <div className="mt-4 text-center text-gray-700">
-              <p>Total de páginas: <strong>{totalPages}</strong></p>
-              {archivoURL && (
-                <a
-                  href={archivoURL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-violet-600 hover:underline"
-                >
-                  Ver archivo subido
-                </a>
-              )}
-            </div>
-          )}
         </div>
       </div>
     </div>
