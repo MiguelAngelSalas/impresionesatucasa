@@ -71,34 +71,55 @@ const FileUploader = () => {
         </h2>
 
         <div className="space-y-4">
-          <input
-            type="file"
-            accept=".pdf,.doc,.docx"
-            onChange={handleFileChange}
-            className="block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-white file:bg-violet-600 hover:file:bg-violet-700"
-          />
+          {/* File input */}
+          <div>
+            <input
+              type="file"
+              accept=".pdf,.doc,.docx"
+              onChange={handleFileChange}
+              className="block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-white file:bg-violet-600 hover:file:bg-violet-700"
+            />
+            <p className="text-xs text-gray-500 mt-1">
+              Aceptamos archivos PDF, DOC y DOCX. Tamaño máximo: 20MB.
+            </p>
+          </div>
 
-          <select
-            value={paperType}
-            onChange={(e) => setPaperType(e.target.value)}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-violet-400"
-          >
-            <option value="">Seleccioná tipo de papel</option>
-            <option value="fotoFino">Foto fino 140 Grs</option>
-            <option value="fotoGrueso">Foto Grueso 200 Grs</option>
-            <option value="mateFino">Mate fino 110 Grs</option>
-            <option value="mateGrueso">Mate grueso 210 Grs</option>
-            <option value="mateGruesoBiFaz">Mate grueso bifaz 200 Grs</option>
-          </select>
+          {/* Paper type */}
+          <div>
+            <select
+              value={paperType}
+              onChange={(e) => setPaperType(e.target.value)}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-violet-400"
+            >
+              <option value="">Seleccioná tipo de papel</option>
+              <option value="fotoFino">Foto fino 140 Grs</option>
+              <option value="fotoGrueso">Foto Grueso 200 Grs</option>
+              <option value="fotoPremium">Foto Grueso Premium 260 Grs</option>
+              <option value="mateFino">Mate fino 110 Grs</option>
+              <option value="mateGrueso">Mate grueso 210 Grs</option>
+              <option value="mateGruesoBiFaz">Mate grueso bifaz 200 Grs</option>
+              <option value="styckers">Autoadhesivo resistente al agua (Styckers)</option>
+            </select>
+            <p className="text-xs text-gray-500 mt-1">
+              Elegí el papel que mejor se adapte a tu diseño. Si no estás seguro, podés consultarnos.
+            </p>
+          </div>
 
-          <input
-            type="text"
-            placeholder="Tu nombre o contacto (opcional)"
-            value={clientName}
-            onChange={(e) => setClientName(e.target.value)}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-violet-400"
-          />
+          {/* Client name */}
+          <div>
+            <input
+              type="text"
+              placeholder="Tu nombre o contacto (opcional)"
+              value={clientName}
+              onChange={(e) => setClientName(e.target.value)}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-violet-400"
+            />
+            <p className="text-xs text-gray-500 mt-1">
+              Este dato nos ayuda a identificar tu pedido. No es obligatorio.
+            </p>
+          </div>
 
+          {/* Upload button */}
           <button
             onClick={handleUpload}
             className="w-full bg-violet-600 text-white py-2 rounded-lg font-medium hover:bg-violet-700 transition"
@@ -106,6 +127,7 @@ const FileUploader = () => {
             Enviar pedido
           </button>
 
+          {/* Status message */}
           {status && (
             <p className="text-center text-sm text-gray-600 mt-4">{status}</p>
           )}
