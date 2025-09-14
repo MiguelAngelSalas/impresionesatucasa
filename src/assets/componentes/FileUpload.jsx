@@ -1,89 +1,138 @@
-const express = require('express');
-const multer = require('multer');
-const cors = require('cors');
-const dotenv = require('dotenv');
-const { v2: cloudinary } = require('cloudinary');
-const fs = require('fs');
-const path = require('path');
-const pdfParse = require('pdf-parse');
+import React, { useState } from "react";
 
-dotenv.config();
-const app = express();
+const FileUploader = () => {
+  const [file, setFile] = useState(null);
+  const [paperType, setPaperType] = useState("");
+  const [clientName, setClientName] = useState("");
+  const [status, setStatus] = useState("");
 
-// Configuración CORS
-app.use(cors({
-  origin: "https://impresionesatucasa.vercel.app", // reemplazá con tu dominio real
-  methods: ["GET", "POST"]
-}));
+  const API_URL = import.meta.env.VITE_API_URL;
 
-const PORT = process.env.PORT || 3001;
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    const allowedTypes = [
+      "application/pdf",
+    ];
 
-// Crear carpeta temporal si no existe
-const tempPath = path.join(__dirname, 'temp');
-if (!fs.existsSync(tempPath)) fs.mkdirSync(tempPath);
+    if (selectedFile && allowedTypes.includes(selectedFile.type)) {
+      setFile(selectedFile);
+      setStatus("");
+    } else {
+      setFile(null);
+      setStatus("Tipo de archivo no permitido. Solo PDF.");
+    }
+  };
 
-// Configuración Cloudinary
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
+  const renameFileWithPaperType = (originalFile, paperType) => {
+    const extension = originalFile.name.split(".").pop();
+    const baseName = originalFile.name.replace(/\.[^/.]+$/, "");
+    const newName = `${baseName}-${paperType}.${extension}`;
+    return new File([originalFile], newName, { type: originalFile.type });
+  };
 
-// Configuración Multer para archivos temporales
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, 'temp/'),
-  filename: (req, file, cb) => cb(null, Date.now() + '-' + file.originalname),
-});
-const upload = multer({ storage });
+  const handleUpload = async () => {
+    if (!file || !paperType) {
+      setStatus("Faltan datos: seleccioná archivo y tipo de papel.");
+      return;
+    }
 
-// Endpoint para subir PDF
-app.post('/upload', upload.single('file'), async (req, res) => {
-  const { paperType, clientName } = req.body;
+    const renamedFile = renameFileWithPaperType(file, paperType);
 
-  if (!req.file || !paperType) {
-    return res.status(400).json({ message: 'Faltan datos: archivo o tipo de papel.' });
-  }
+    const formData = new FormData();
+    formData.append("file", renamedFile);
+    formData.append("paperType", paperType);
+    formData.append("clientName", clientName);
 
-  // Verificar que sea PDF
-  if (req.file.mimetype !== 'application/pdf') {
-    fs.unlinkSync(req.file.path); // eliminar temporal
-    return res.status(400).json({ message: 'Solo se permiten archivos PDF.' });
-  }
+    try {
+      const response = await fetch(`${API_URL}/upload`, {
+        method: "POST",
+        body: formData,
+      });
 
-  try {
-    // Leer PDF y contar páginas
-    const dataBuffer = fs.readFileSync(req.file.path);
-    const pdfData = await pdfParse(dataBuffer);
-    const totalPages = pdfData.numpages;
+      if (response.ok) {
+        const result = await response.json();
+        setStatus(`Pedido recibido: ${result.message}`);
+      } else {
+        setStatus("Error al subir el archivo.");
+      }
+    } catch (error) {
+      console.error("Error al conectar con el servidor:", error);
+      setStatus("Error de conexión con el servidor.");
+    }
+  };
 
-    // Subir a Cloudinary
-    const result = await cloudinary.uploader.upload(req.file.path, {
-      resource_type: 'auto',
-      folder: 'pedidos',
-      public_id: `${Date.now()}-${paperType}`,
-    });
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-violet-100 to-white flex items-center justify-center px-4 py-10">
+      <div className="w-full max-w-md sm:max-w-lg md:max-w-xl bg-white rounded-xl shadow-lg p-6 sm:p-8">
+        <h2 className="text-xl sm:text-2xl font-bold text-violet-700 mb-6 text-center">
+          Subí tu archivo para imprimir
+        </h2>
 
-    // Borrar archivo temporal
-    fs.unlinkSync(req.file.path);
+        <div className="space-y-4">
+          {/* File input */}
+          <div>
+            <input
+              type="file"
+              accept=".pdf"
+              onChange={handleFileChange}
+              className="block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-white file:bg-violet-600 hover:file:bg-violet-700"
+            />
+            <p className="text-xs text-gray-500 mt-1">
+              Aceptamos archivos PDF. Tamaño máximo: 20MB.
+            </p>
+          </div>
 
-    // Enviar respuesta al frontend
-    res.json({
-      message: 'Pedido recibido correctamente',
-      totalPages: totalPages,
-      archivoURL: result.secure_url,
-    });
+          {/* Paper type */}
+          <div>
+            <select
+              value={paperType}
+              onChange={(e) => setPaperType(e.target.value)}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-violet-400"
+            >
+              <option value="">Seleccioná tipo de papel</option>
+              <option value="fotoFino">Foto fino 140 Grs</option>
+              <option value="fotoGrueso">Foto Grueso 200 Grs</option>
+              <option value="fotoPremium">Foto Grueso Premium 260 Grs</option>
+              <option value="mateFino">Mate fino 110 Grs</option>
+              <option value="mateGrueso">Mate grueso 210 Grs</option>
+              <option value="mateGruesoBiFaz">Mate grueso bifaz 200 Grs</option>
+              <option value="styckers">Autoadhesivo resistente al agua (Styckers)</option>
+            </select>
+            <p className="text-xs text-gray-500 mt-1">
+              Elegí el papel que mejor se adapte a tu diseño. Si no estás seguro, podés consultarnos.
+            </p>
+          </div>
 
-  } catch (error) {
-    console.error('Error al procesar el PDF:', error);
-    fs.unlinkSync(req.file.path); // borrar temporal si hubo error
-    res.status(500).json({ message: 'Error al procesar el archivo.' });
-  }
-});
+          {/* Client name */}
+          <div>
+            <input
+              type="text"
+              placeholder="Tu nombre o contacto (opcional)"
+              value={clientName}
+              onChange={(e) => setClientName(e.target.value)}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-violet-400"
+            />
+            <p className="text-xs text-gray-500 mt-1">
+              Este dato nos ayuda a identificar tu pedido. No es obligatorio.
+            </p>
+          </div>
 
-// Endpoint de prueba
-app.get("/ping", (req, res) => res.send("pong"));
+          {/* Upload button */}
+          <button
+            onClick={handleUpload}
+            className="w-full bg-violet-600 text-white py-2 rounded-lg font-medium hover:bg-violet-700 transition"
+          >
+            Enviar pedido
+          </button>
 
-// Levantar servidor
-app.listen(PORT, () => {
-  console.log(`Servidor corriendo en http://localhost:${PORT}`);
-});
+          {/* Status message */}
+          {status && (
+            <p className="text-center text-sm text-gray-600 mt-4">{status}</p>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default FileUploader;
