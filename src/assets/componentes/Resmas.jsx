@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Resmas = [
+const resmas = [
   {
     id: 'mateFino',
     nombre: 'Mate fino 110 Grs',
