@@ -1,6 +1,6 @@
 import React from 'react';
 
-const resmas = [
+const Resmas = [
   {
     id: 'mateFino',
     nombre: 'Mate fino 110 Grs',
@@ -64,5 +64,6 @@ const Resmas = () => {
     </section>
   );
 };
+
 
 export default Resmas;
