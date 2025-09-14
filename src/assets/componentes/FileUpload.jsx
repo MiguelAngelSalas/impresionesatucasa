@@ -1,3 +1,4 @@
+// src/FileUploader.jsx
 import React, { useState } from "react";
 
 const FileUploader = () => {
@@ -5,29 +6,25 @@ const FileUploader = () => {
   const [paperType, setPaperType] = useState("");
   const [clientName, setClientName] = useState("");
   const [status, setStatus] = useState("");
+  const [totalPages, setTotalPages] = useState(null);
+  const [archivoURL, setArchivoURL] = useState("");
 
   const API_URL = import.meta.env.VITE_API_URL;
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
-    const allowedTypes = [
-      "application/pdf",
-    ];
+    if (!selectedFile) return;
 
-    if (selectedFile && allowedTypes.includes(selectedFile.type)) {
-      setFile(selectedFile);
-      setStatus("");
-    } else {
+    if (selectedFile.type !== "application/pdf") {
       setFile(null);
       setStatus("Tipo de archivo no permitido. Solo PDF.");
+      setTotalPages(null);
+      return;
     }
-  };
 
-  const renameFileWithPaperType = (originalFile, paperType) => {
-    const extension = originalFile.name.split(".").pop();
-    const baseName = originalFile.name.replace(/\.[^/.]+$/, "");
-    const newName = `${baseName}-${paperType}.${extension}`;
-    return new File([originalFile], newName, { type: originalFile.type });
+    setFile(selectedFile);
+    setStatus("");
+    setTotalPages(null);
   };
 
   const handleUpload = async () => {
@@ -36,10 +33,8 @@ const FileUploader = () => {
       return;
     }
 
-    const renamedFile = renameFileWithPaperType(file, paperType);
-
     const formData = new FormData();
-    formData.append("file", renamedFile);
+    formData.append("file", file);
     formData.append("paperType", paperType);
     formData.append("clientName", clientName);
 
@@ -51,9 +46,12 @@ const FileUploader = () => {
 
       if (response.ok) {
         const result = await response.json();
-        setStatus(`Pedido recibido: ${result.message}`);
+        setTotalPages(result.totalPages);
+        setArchivoURL(result.archivoURL);
+        setStatus(`Pedido recibido correctamente`);
       } else {
-        setStatus("Error al subir el archivo.");
+        const error = await response.json();
+        setStatus(error.message || "Error al subir el archivo.");
       }
     } catch (error) {
       console.error("Error al conectar con el servidor:", error);
@@ -78,7 +76,7 @@ const FileUploader = () => {
               className="block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-white file:bg-violet-600 hover:file:bg-violet-700"
             />
             <p className="text-xs text-gray-500 mt-1">
-              Aceptamos archivos PDF. Tamaño máximo: 20MB.
+              Solo archivos PDF. Tamaño máximo: 20MB.
             </p>
           </div>
 
@@ -92,15 +90,12 @@ const FileUploader = () => {
               <option value="">Seleccioná tipo de papel</option>
               <option value="fotoFino">Foto fino 140 Grs</option>
               <option value="fotoGrueso">Foto Grueso 200 Grs</option>
-              <option value="fotoPremium">Foto Grueso Premium 260 Grs</option>
+              <option value="fotoPremium">Foto Premium 260 Grs</option>
               <option value="mateFino">Mate fino 110 Grs</option>
               <option value="mateGrueso">Mate grueso 210 Grs</option>
               <option value="mateGruesoBiFaz">Mate grueso bifaz 200 Grs</option>
               <option value="styckers">Autoadhesivo resistente al agua (Styckers)</option>
             </select>
-            <p className="text-xs text-gray-500 mt-1">
-              Elegí el papel que mejor se adapte a tu diseño. Si no estás seguro, podés consultarnos.
-            </p>
           </div>
 
           {/* Client name */}
@@ -112,9 +107,6 @@ const FileUploader = () => {
               onChange={(e) => setClientName(e.target.value)}
               className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-violet-400"
             />
-            <p className="text-xs text-gray-500 mt-1">
-              Este dato nos ayuda a identificar tu pedido. No es obligatorio.
-            </p>
           </div>
 
           {/* Upload button */}
@@ -126,8 +118,23 @@ const FileUploader = () => {
           </button>
 
           {/* Status message */}
-          {status && (
-            <p className="text-center text-sm text-gray-600 mt-4">{status}</p>
+          {status && <p className="text-center text-sm text-gray-600 mt-4">{status}</p>}
+
+          {/* Mostrar total de páginas y link */}
+          {totalPages !== null && (
+            <div className="mt-4 text-center text-gray-700">
+              <p>Total de páginas: <strong>{totalPages}</strong></p>
+              {archivoURL && (
+                <a
+                  href={archivoURL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-violet-600 hover:underline"
+                >
+                  Ver archivo subido
+                </a>
+              )}
+            </div>
           )}
         </div>
       </div>
