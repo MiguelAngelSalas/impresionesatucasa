@@ -14,7 +14,7 @@ import { subirArchivo } from "../../services/api";
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
 const preciosPorPapel = {
-  fotoFino: 1520,
+  fotoFino: 1420,
   fotoGrueso: 1520,
   fotoPremium: 2180,
   mateFino: 1460,
