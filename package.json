@@ -10,13 +10,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@tailwindcss/vite": "^4.1.13",
-    "amqplib": "^0.10.9",
-    "pdfjs-dist": "^5.4.149",
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1",
-    "react-router-dom": "^7.9.1",
-    "tailwind": "^2.3.1"
+  "react": "^19.1.1",
+  "react-dom": "^19.1.1",
+  "react-router-dom": "^7.9.1",
+  "pdfjs-dist": "^5.4.149"
   },
   "devDependencies": {
     "@eslint/js": "^9.33.0",
