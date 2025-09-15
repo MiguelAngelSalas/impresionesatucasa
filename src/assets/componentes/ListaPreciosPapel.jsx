@@ -1,13 +1,13 @@
 import React from "react";
 
 const precios = [
-  { id: "fotoFino", nombre: "Foto fino 140 Grs", precio: 700 },
-  { id: "fotoGrueso", nombre: "Foto Grueso 200 Grs", precio: 750 },
-  { id: "fotoPremium", nombre: "Foto Premium 260 Grs", precio: 1000 },
-  { id: "mateFino", nombre: "Mate fino 110 Grs", precio: 640 },
-  { id: "mateGrueso", nombre: "Mate grueso 210 Grs", precio: 650 },
-  { id: "mateGruesoBiFaz", nombre: "Mate grueso bifaz 200 Grs", precio: 750 },
-  { id: "styckers", nombre: "Autoadhesivo resistente al agua (Styckers)", precio: 1430 },
+  { id: "fotoFino", nombre: "Foto fino 140 Grs", precio: 1420 },
+  { id: "fotoGrueso", nombre: "Foto Grueso 200 Grs", precio: 1520 },
+  { id: "fotoPremium", nombre: "Foto Premium 260 Grs", precio: 2180 },
+  { id: "mateFino", nombre: "Mate fino 110 Grs", precio: 1460 },
+  { id: "mateGrueso", nombre: "Mate grueso 210 Grs", precio: 1540 },
+  { id: "mateGruesoBiFaz", nombre: "Mate grueso bifaz 200 Grs", precio: 1700 },
+  { id: "styckers", nombre: "Autoadhesivo resistente al agua (Styckers)", precio: 2440 },
 ];
 
 const ListaPreciosPapel = () => {
