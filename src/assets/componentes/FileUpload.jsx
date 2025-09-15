@@ -1,75 +1,57 @@
-// src/FileUploader.jsx
 import React, { useState } from "react";
-import * as pdfjsLib from "pdfjs-dist/build/pdf";
-import pdfjsWorker from "pdfjs-dist/build/pdf.worker.entry";
-
-pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
+import InputArchivo from "./InputArchivo";
+import SelectorPapel from "./SelectorPapel";
+import InputCliente from "./InputCliente";
+import BotonEnviar from "./BotonEnviar";
+import MensajeEstado from "./MensajeEstado";
+import { subirArchivo } from "../../services/api";
 
 const FileUploader = () => {
-  const [file, setFile] = useState(null);
-  const [paperType, setPaperType] = useState("");
-  const [clientName, setClientName] = useState("");
-  const [status, setStatus] = useState("");
-  const [totalPages, setTotalPages] = useState(null);
+  const [archivo, setArchivo] = useState(null);
+  const [tipoPapel, setTipoPapel] = useState("");
+  const [nombreCliente, setNombreCliente] = useState("");
+  const [estado, setEstado] = useState("");
+  const [totalPaginas, setTotalPaginas] = useState(null);
 
-  const API_URL = import.meta.env.VITE_API_URL;
+  const manejarCambioArchivo = async (e) => {
+    const archivoSeleccionado = e.target.files[0];
+    if (!archivoSeleccionado) return;
 
-  const handleFileChange = async (e) => {
-    const selectedFile = e.target.files[0];
-    if (!selectedFile) return;
-
-    if (selectedFile.type !== "application/pdf") {
-      setFile(null);
-      setStatus("Tipo de archivo no permitido. Solo PDF.");
-      setTotalPages(null);
+    if (archivoSeleccionado.type !== "application/pdf") {
+      setArchivo(null);
+      setEstado("❌ Solo se aceptan archivos PDF.");
+      setTotalPaginas(null);
       return;
     }
 
-    setFile(selectedFile);
-    setStatus("");
+    if (archivoSeleccionado.size > 20 * 1024 * 1024) {
+      setArchivo(null);
+      setEstado("❌ El archivo supera el tamaño máximo de 20MB.");
+      setTotalPaginas(null);
+      return;
+    }
 
-    // Leer PDF y contar páginas
-    const fileReader = new FileReader();
-    fileReader.onload = async function() {
-      const typedArray = new Uint8Array(this.result);
-      try {
-        const pdf = await pdfjsLib.getDocument(typedArray).promise;
-        setTotalPages(pdf.numPages);
-      } catch (err) {
-        console.error("Error al leer PDF:", err);
-        setTotalPages(null);
-      }
-    };
-    fileReader.readAsArrayBuffer(selectedFile);
+    setArchivo(archivoSeleccionado);
+    setEstado("✅ Archivo listo para enviar.");
+    setTotalPaginas(null); // se actualizará después del envío
   };
 
-  const handleUpload = async () => {
-    if (!file || !paperType) {
-      setStatus("Faltan datos: seleccioná archivo y tipo de papel.");
+  const manejarEnvio = async () => {
+    if (!archivo || !tipoPapel) {
+      setEstado("⚠️ Faltan datos: seleccioná archivo y tipo de papel.");
       return;
     }
 
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("paperType", paperType);
-    formData.append("clientName", clientName);
+    const { mensaje, pedido } = await subirArchivo({
+      archivo,
+      tipoPapel,
+      nombreCliente,
+    });
 
-    try {
-      const response = await fetch(`${API_URL}/upload`, {
-        method: "POST",
-        body: formData,
-      });
+    setEstado(mensaje);
 
-      if (response.ok) {
-        const result = await response.json();
-        setStatus(`Pedido recibido correctamente`);
-      } else {
-        const error = await response.json();
-        setStatus(error.message || "Error al subir el archivo.");
-      }
-    } catch (error) {
-      console.error("Error al conectar con el servidor:", error);
-      setStatus("Error de conexión con el servidor.");
+    if (pedido?.paginas) {
+      setTotalPaginas(pedido.paginas);
     }
   };
 
@@ -81,61 +63,16 @@ const FileUploader = () => {
         </h2>
 
         <div className="space-y-4">
-          {/* File input */}
-          <div className="relative">
-            <input
-              type="file"
-              accept=".pdf"
-              onChange={handleFileChange}
-              className="block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-white file:bg-violet-600 hover:file:bg-violet-700"
-            />
-            {/* Mostrar número de páginas al costado */}
-            {totalPages !== null && (
-              <span className="absolute right-3 top-2 text-gray-700 font-semibold">
-                {totalPages} páginas
-              </span>
-            )}
-          </div>
+          <InputArchivo onChange={manejarCambioArchivo} totalPaginas={totalPaginas} />
 
-          {/* Paper type */}
-          <div>
-            <select
-              value={paperType}
-              onChange={(e) => setPaperType(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-violet-400"
-            >
-              <option value="">Seleccioná tipo de papel</option>
-              <option value="fotoFino">Foto fino 140 Grs</option>
-              <option value="fotoGrueso">Foto Grueso 200 Grs</option>
-              <option value="fotoPremium">Foto Premium 260 Grs</option>
-              <option value="mateFino">Mate fino 110 Grs</option>
-              <option value="mateGrueso">Mate grueso 210 Grs</option>
-              <option value="mateGruesoBiFaz">Mate grueso bifaz 200 Grs</option>
-              <option value="styckers">Autoadhesivo resistente al agua (Styckers)</option>
-            </select>
-          </div>
+          <p className="text-sm text-gray-500 text-center">
+            Solo archivos PDF. Tamaño máximo 20MB.
+          </p>
 
-          {/* Client name */}
-          <div>
-            <input
-              type="text"
-              placeholder="Tu nombre o contacto (opcional)"
-              value={clientName}
-              onChange={(e) => setClientName(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-violet-400"
-            />
-          </div>
-
-          {/* Upload button */}
-          <button
-            onClick={handleUpload}
-            className="w-full bg-violet-600 text-white py-2 rounded-lg font-medium hover:bg-violet-700 transition"
-          >
-            Enviar pedido
-          </button>
-
-          {/* Status message */}
-          {status && <p className="text-center text-sm text-gray-600 mt-4">{status}</p>}
+          <SelectorPapel value={tipoPapel} onChange={setTipoPapel} />
+          <InputCliente value={nombreCliente} onChange={setNombreCliente} />
+          <BotonEnviar onClick={manejarEnvio} />
+          <MensajeEstado estado={estado} />
         </div>
       </div>
     </div>
