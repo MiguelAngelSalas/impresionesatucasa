@@ -7,20 +7,28 @@ import SelectorPapel from "./SelectorPapel";
 import InputCliente from "./InputCliente";
 import BotonEnviar from "./BotonEnviar";
 import MensajeEstado from "./MensajeEstado";
-import ListaPreciosPapel from "./ListaPreciosPapel"; // 💡 nuevo componente
+import ListaPreciosPapel from "./ListaPreciosPapel";
 import { subirArchivo } from "../../services/api";
 
 // configuración del worker de pdf.js
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
 const preciosPorPapel = {
-  fotoFino: 700,
-  fotoGrueso: 750,
-  fotoPremium: 1000,
-  mateFino: 640,
-  mateGrueso: 650,
-  mateGruesoBiFaz: 750,
-  styckers: 1430,
+  fotoFino: 1420,
+  fotoGrueso: 1520,
+  fotoPremium: 2180,
+  mateFino: 1460,
+  mateGrueso: 1540,
+  mateGruesoBiFaz: 1700,
+  styckers: 2440,
+};
+
+const calcularDescuento = (paginas) => {
+  if (paginas > 50) return 0.3;
+  if (paginas > 30) return 0.2;
+  if (paginas > 20) return 0.15;
+  if (paginas > 10) return 0.1;
+  return 0;
 };
 
 const FileUploader = () => {
@@ -31,8 +39,11 @@ const FileUploader = () => {
   const [totalPaginas, setTotalPaginas] = useState(null);
 
   const precioUnitario = preciosPorPapel[tipoPapel] || 0;
-  const precioEstimado =
+  const descuento = calcularDescuento(totalPaginas || 0);
+  const precioSinDescuento =
     totalPaginas && tipoPapel ? totalPaginas * precioUnitario : null;
+  const precioFinal =
+    precioSinDescuento ? Math.round(precioSinDescuento * (1 - descuento)) : null;
 
   const manejarCambioArchivo = async (e) => {
     const archivoSeleccionado = e.target.files[0];
@@ -95,6 +106,10 @@ const FileUploader = () => {
       <div className="flex flex-col md:flex-row gap-6 w-full max-w-5xl">
         {/* 🧾 Panel principal */}
         <div className="flex-1 bg-white rounded-xl shadow-lg p-6 sm:p-8">
+                  <div className="bg-violet-50 border border-violet-200 text-violet-700 my-4 text-sm sm:text-base font-medium px-4 py-2 rounded-lg shadow-sm text-center">🎉 ¡Descuento automático desde 10 hojas en adelante!</div>
+
+          <div className="space-y-4"></div>
+          
           <h2 className="text-xl sm:text-2xl font-bold text-violet-700 mb-6 text-center">
             Subí tu archivo para imprimir
           </h2>
@@ -113,10 +128,22 @@ const FileUploader = () => {
             <InputCliente value={nombreCliente} onChange={setNombreCliente} />
 
             {totalPaginas && tipoPapel && (
-              <div className="text-center text-violet-700 font-semibold text-lg">
+              <div className="text-center text-violet-700 font-semibold text-lg space-y-1">
                 📄 Total páginas: {totalPaginas} <br />
                 🧾 Papel seleccionado: {tipoPapel} <br />
-                💰 Precio estimado: ${precioEstimado}
+                {descuento > 0 ? (
+                  <>
+                    💰 Precio original:{" "}
+                    <span className="line-through text-gray-500">
+                      ${precioSinDescuento}
+                    </span>{" "}
+                    <br />
+                    🎉 Descuento aplicado: {descuento * 100}% <br />
+                    💸 Precio final: ${precioFinal}
+                  </>
+                ) : (
+                  <>💰 Precio estimado: ${precioFinal}</>
+                )}
               </div>
             )}
 
@@ -125,8 +152,13 @@ const FileUploader = () => {
           </div>
         </div>
 
-        {/* 💸 Lista de precios al costado */}
-        <ListaPreciosPapel />
+        {/* 💸 Lista de precios + envío gratis */}
+        <div className="flex flex-col items-center gap-4 w-full md:w-72">
+          <ListaPreciosPapel />
+          <div className="bg-violet-100 text-violet-700 text-sm font-semibold px-4 py-2 rounded-lg shadow text-center">
+            🚚 ¡Envío gratis en todos tus pedidos!
+          </div>
+        </div>
       </div>
     </div>
   );
