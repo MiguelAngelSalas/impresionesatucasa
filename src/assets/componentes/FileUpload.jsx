@@ -106,11 +106,13 @@ const FileUploader = () => {
       <div className="flex flex-col md:flex-row gap-6 w-full max-w-5xl">
         {/* 🧾 Panel principal */}
         <div className="flex-1 bg-white rounded-xl shadow-lg p-6 sm:p-8">
+                  <div className="bg-violet-50 border border-violet-200 text-violet-700 my-4 text-sm sm:text-base font-medium px-4 py-2 rounded-lg shadow-sm text-center">🎉 ¡Descuento automático desde 10 hojas en adelante!</div>
+
+          <div className="space-y-4"></div>
+          
           <h2 className="text-xl sm:text-2xl font-bold text-violet-700 mb-6 text-center">
             Subí tu archivo para imprimir
           </h2>
-          {/* Banner de descuento */}
-          <div className="bg-violet-50 border border-violet-200 text-violet-700 text-sm sm:text-base font-medium px-4 py-2 rounded-lg shadow-sm text-center">🎉 ¡Descuento automático desde 10 hojas en adelante!</div>
 
           <div className="space-y-4">
             <InputArchivo
