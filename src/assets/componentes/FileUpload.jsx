@@ -37,6 +37,7 @@ const FileUploader = () => {
   const [nombreCliente, setNombreCliente] = useState("");
   const [estado, setEstado] = useState("");
   const [totalPaginas, setTotalPaginas] = useState(null);
+  const [mostrarMensajeContacto, setMostrarMensajeContacto] = useState(false);
 
   const precioUnitario = preciosPorPapel[tipoPapel] || 0;
   const descuento = calcularDescuento(totalPaginas || 0);
@@ -99,6 +100,8 @@ const FileUploader = () => {
     if (pedido?.paginas) {
       setTotalPaginas(pedido.paginas);
     }
+
+    setMostrarMensajeContacto(true);
   };
 
   return (
@@ -106,10 +109,10 @@ const FileUploader = () => {
       <div className="flex flex-col md:flex-row gap-6 w-full max-w-5xl">
         {/* 🧾 Panel principal */}
         <div className="flex-1 bg-white rounded-xl shadow-lg p-6 sm:p-8">
-                  <div className="bg-violet-50 border border-violet-200 text-violet-700 my-4 text-sm sm:text-base font-medium px-4 py-2 rounded-lg shadow-sm text-center">🎉 ¡Descuento automático desde 10 hojas en adelante!</div>
+          <div className="bg-violet-50 border border-violet-200 text-violet-700 my-4 text-sm sm:text-base font-medium px-4 py-2 rounded-lg shadow-sm text-center">
+            🎉 ¡Descuento automático desde 10 hojas en adelante!
+          </div>
 
-          <div className="space-y-4"></div>
-          
           <h2 className="text-xl sm:text-2xl font-bold text-violet-700 mb-6 text-center">
             Subí tu archivo para imprimir
           </h2>
@@ -149,6 +152,12 @@ const FileUploader = () => {
 
             <BotonEnviar onClick={manejarEnvio} />
             <MensajeEstado estado={estado} />
+
+            {mostrarMensajeContacto && (
+              <div className="bg-green-100 border border-green-300 text-green-800 text-sm font-medium px-4 py-2 rounded-lg shadow-sm text-center mt-4">
+                📞 En breve nos comunicaremos desde el número <strong>11-1234-5678</strong>
+              </div>
+            )}
           </div>
         </div>
 
@@ -164,4 +173,4 @@ const FileUploader = () => {
   );
 };
 
-export default FileUploader;
+export default FileUploader
