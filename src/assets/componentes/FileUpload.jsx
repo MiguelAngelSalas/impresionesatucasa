@@ -155,7 +155,7 @@ const FileUploader = () => {
 
             {mostrarMensajeContacto && (
               <div className="bg-green-100 border border-green-300 text-green-800 text-sm font-medium px-4 py-2 rounded-lg shadow-sm text-center mt-4">
-                📞 En breve nos comunicaremos desde el número <strong>11-1234-5678</strong>
+                📞 En breve nos comunicaremos desde el número <strong>11-2390-9529</strong>
               </div>
             )}
           </div>
