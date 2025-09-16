@@ -10,7 +10,6 @@ import MensajeEstado from "./MensajeEstado";
 import ListaPreciosPapel from "./ListaPreciosPapel";
 import { subirArchivo } from "../../services/api";
 
-// configuración del worker de pdf.js
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
 const preciosPorPapel = {
@@ -89,9 +88,7 @@ const FileUploader = () => {
       return;
     }
 
-    // Renombrar el archivo para incluir nombre, teléfono y páginas
-    const nombreOriginal = archivo.name;
-    const extension = nombreOriginal.split(".").pop();
+    const extension = archivo.name.split(".").pop();
     const nuevoNombre = `${nombreCliente}_${telefonoCliente}_${totalPaginas}.${extension}`;
     const archivoRenombrado = new File([archivo], nuevoNombre, { type: archivo.type });
 
@@ -104,18 +101,13 @@ const FileUploader = () => {
     });
 
     setEstado(mensaje);
-
-    if (pedido?.paginas) {
-      setTotalPaginas(pedido.paginas);
-    }
-
+    if (pedido?.paginas) setTotalPaginas(pedido.paginas);
     setMostrarMensajeContacto(true);
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-violet-100 to-white flex items-center justify-center px-4 py-10">
       <div className="flex flex-col md:flex-row gap-6 w-full max-w-5xl">
-        {/* 🧾 Panel principal */}
         <div className="flex-1 bg-white rounded-xl shadow-lg p-6 sm:p-8">
           <div className="bg-violet-50 border border-violet-200 text-violet-700 my-4 text-sm sm:text-base font-medium px-4 py-2 rounded-lg shadow-sm text-center">
             🎉 ¡Descuento automático desde 10 hojas en adelante!
@@ -126,15 +118,8 @@ const FileUploader = () => {
           </h2>
 
           <div className="space-y-4">
-            <InputArchivo
-              onChange={manejarCambioArchivo}
-              totalPaginas={totalPaginas}
-            />
-
-            <p className="text-sm text-gray-500 text-center">
-              Solo archivos PDF. Tamaño máximo 20MB.
-            </p>
-
+            <InputArchivo onChange={manejarCambioArchivo} totalPaginas={totalPaginas} />
+            <p className="text-sm text-gray-500 text-center">Solo archivos PDF. Tamaño máximo 20MB.</p>
             <SelectorPapel value={tipoPapel} onChange={setTipoPapel} />
             <InputCliente value={nombreCliente} onChange={setNombreCliente} />
 
@@ -156,11 +141,7 @@ const FileUploader = () => {
                 🧾 Papel seleccionado: {tipoPapel} <br />
                 {descuento > 0 ? (
                   <>
-                    💰 Precio original:{" "}
-                    <span className="line-through text-gray-500">
-                      ${precioSinDescuento}
-                    </span>{" "}
-                    <br />
+                    💰 Precio original: <span className="line-through text-gray-500">${precioSinDescuento}</span> <br />
                     🎉 Descuento aplicado: {descuento * 100}% <br />
                     💸 Precio final: ${precioFinal}
                   </>
@@ -181,7 +162,6 @@ const FileUploader = () => {
           </div>
         </div>
 
-        {/* 💸 Lista de precios + envío gratis */}
         <div className="flex flex-col items-center gap-4 w-full md:w-72">
           <ListaPreciosPapel />
           <div className="bg-violet-100 text-violet-700 text-sm font-semibold px-4 py-2 rounded-lg shadow text-center">
