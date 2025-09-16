@@ -83,20 +83,30 @@ const FileUploader = () => {
   };
 
   const manejarEnvio = async () => {
-    if (!archivo || !tipoPapel || !telefonoCliente) {
+    const telefonoNormalizado = telefonoCliente.trim().replace(/\s+/g, '');
+
+    if (!archivo || !tipoPapel || !telefonoNormalizado) {
       setEstado("⚠️ Faltan datos: archivo, tipo de papel y teléfono.");
       return;
     }
 
+    console.log("📤 Enviando datos:", {
+      archivo,
+      tipoPapel,
+      nombreCliente,
+      telefonoCliente: telefonoNormalizado,
+      paginas: totalPaginas,
+    });
+
     const extension = archivo.name.split(".").pop();
-    const nuevoNombre = `${nombreCliente}_${telefonoCliente}_${totalPaginas}.${extension}`;
+    const nuevoNombre = `${nombreCliente}_${telefonoNormalizado}_${totalPaginas}.${extension}`;
     const archivoRenombrado = new File([archivo], nuevoNombre, { type: archivo.type });
 
     const { mensaje, pedido } = await subirArchivo({
       archivo: archivoRenombrado,
       tipoPapel,
       nombreCliente,
-      telefonoCliente,
+      telefonoCliente: telefonoNormalizado,
       paginas: totalPaginas,
     });
 
