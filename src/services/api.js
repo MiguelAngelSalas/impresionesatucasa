@@ -1,13 +1,14 @@
 const API_URL = import.meta.env.VITE_API_URL;
 
-export const subirArchivo = async ({ archivo, tipoPapel, nombreCliente }) => {
+export const subirArchivo = async ({ archivo, tipoPapel, nombreCliente, telefonoCliente, paginas }) => {
   const formData = new FormData();
-  formData.append("file", archivo);
+  formData.append("file", archivo, archivo.name); // 👈 nombre explícito
   formData.append("paperType", tipoPapel);
   formData.append("clientName", nombreCliente);
+  formData.append("telefonoCliente", telefonoCliente);
+  formData.append("paginas", paginas);
 
   try {
-    const API_URL = import.meta.env.VITE_API_URL;
     const respuesta = await fetch(`${API_URL}/upload`, {
       method: "POST",
       body: formData,
