@@ -31,7 +31,6 @@ const calcularDescuento = (paginas) => {
 };
 
 const FileUploader = () => {
-  // 🔐 Redirección automática a HTTPS
   useEffect(() => {
     if (window.location.protocol === "http:") {
       window.location.href = window.location.href.replace("http:", "https:");
@@ -123,8 +122,8 @@ const FileUploader = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-violet-100 to-white flex items-center justify-center px-4 py-10">
-      <div className="flex flex-col md:flex-row gap-6 w-full max-w-5xl">
+    <div className="min-h-screen bg-gradient-to-br from-violet-100 to-white flex items-center justify-center px-4 py-10 overflow-y-auto">
+      <div className="flex flex-col md:flex-row gap-6 w-full max-w-screen-md mx-auto">
         <div className="flex-1 bg-white rounded-xl shadow-lg p-6 sm:p-8">
           <div className="bg-violet-50 border border-violet-200 text-violet-700 my-4 text-sm sm:text-base font-medium px-4 py-2 rounded-lg shadow-sm text-center">
             🎉 ¡Descuento automático desde 10 hojas en adelante!
@@ -134,7 +133,7 @@ const FileUploader = () => {
             Subí tu archivo para imprimir
           </h2>
 
-          <div className="space-y-4">
+          <div className="space-y-6 sm:space-y-4">
             <InputArchivo onChange={manejarCambioArchivo} totalPaginas={totalPaginas} />
             <p className="text-sm text-gray-500 text-center">Solo archivos PDF. Tamaño máximo 20MB.</p>
             <SelectorPapel value={tipoPapel} onChange={setTipoPapel} />
@@ -144,6 +143,7 @@ const FileUploader = () => {
               <label className="block text-sm font-medium text-gray-700">📱 Teléfono de contacto</label>
               <input
                 type="tel"
+                inputMode="numeric"
                 value={telefonoCliente}
                 onChange={(e) => setTelefonoCliente(e.target.value)}
                 placeholder="Ej: 11-1234-5678"
@@ -190,4 +190,4 @@ const FileUploader = () => {
   );
 };
 
-export default FileUploader
+export default FileUploader;
