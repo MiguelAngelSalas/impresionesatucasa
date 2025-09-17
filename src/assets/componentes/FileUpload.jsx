@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import * as pdfjsLib from "pdfjs-dist";
 import pdfjsWorker from "pdfjs-dist/build/pdf.worker?url";
 
@@ -31,6 +31,13 @@ const calcularDescuento = (paginas) => {
 };
 
 const FileUploader = () => {
+  // 🔐 Redirección automática a HTTPS
+  useEffect(() => {
+    if (window.location.protocol === "http:") {
+      window.location.href = window.location.href.replace("http:", "https:");
+    }
+  }, []);
+
   const [archivo, setArchivo] = useState(null);
   const [tipoPapel, setTipoPapel] = useState("");
   const [nombreCliente, setNombreCliente] = useState("");
@@ -183,4 +190,4 @@ const FileUploader = () => {
   );
 };
 
-export default FileUploader;
+export default FileUploader
