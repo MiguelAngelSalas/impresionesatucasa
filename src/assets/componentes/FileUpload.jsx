@@ -114,7 +114,7 @@ const FileUploader = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-violet-100 to-white flex items-center justify-center px-4 py-10 overflow-y-auto relative">
+    <div className="min-h-screen bg-gradient-to-br from-violet-100 to-white flex items-center justify-center px-4 py-10 overflow-y-auto">
       <div className="flex flex-col md:flex-row gap-6 w-full max-w-md mx-auto">
         <div className="flex-1 min-w-0 bg-white rounded-xl shadow-lg p-6 sm:p-8">
           <div className="bg-violet-50 border border-violet-200 text-violet-700 my-4 text-sm sm:text-base font-medium px-4 py-2 rounded-lg shadow-sm text-center break-words">
@@ -125,7 +125,7 @@ const FileUploader = () => {
             Subí tu archivo para imprimir
           </h2>
 
-          <div className="space-y-6 sm:space-y-4 pb-20">
+          <div className="space-y-6 sm:space-y-4">
             <InputArchivo onChange={manejarCambioArchivo} totalPaginas={totalPaginas} />
             <p className="text-sm text-gray-500 text-center break-words">Solo archivos PDF. Tamaño máximo 20MB.</p>
             <SelectorPapel value={tipoPapel} onChange={setTipoPapel} />
@@ -160,11 +160,7 @@ const FileUploader = () => {
               </div>
             )}
 
-            {/* Botón visible en desktop */}
-            <div className="hidden md:block">
-              <BotonEnviar onClick={manejarEnvio} />
-            </div>
-
+            <BotonEnviar onClick={manejarEnvio} />
             <MensajeEstado estado={estado} />
 
             {mostrarMensajeContacto && (
@@ -181,11 +177,6 @@ const FileUploader = () => {
             🚚 ¡Envío gratis en todos tus pedidos!
           </div>
         </div>
-      </div>
-
-      {/* Botón flotante solo en mobile */}
-      <div className="fixed bottom-4 left-4 right-4 z-50 md:hidden">
-        <BotonEnviar onClick={manejarEnvio} />
       </div>
     </div>
   );
