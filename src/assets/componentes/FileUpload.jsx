@@ -1,39 +1,3 @@
-import React, { useState } from "react";
-import * as pdfjsLib from "pdfjs-dist";
-import pdfjsWorker from "pdfjs-dist/build/pdf.worker?url";
-
-import InputArchivo from "./InputArchivo";
-import SelectorPapel from "./SelectorPapel";
-import InputCliente from "./InputCliente";
-import BotonEnviar from "./BotonEnviar";
-import MensajeEstado from "./MensajeEstado";
-import ListaPreciosPapel from "./ListaPreciosPapel";
-import { subirArchivo } from "../../services/api";
-
-// configuración del worker de pdf.js
-pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
-
-const preciosPorPapel = {
-  fotoFino: 1420,
-  fotoGrueso: 1520,
-  fotoPremium: 2180,
-  mateFino: 1460,
-  mateGrueso: 1540,
-  mateGruesoBiFaz: 1700,
-  styckers: 2440,
-};
-
-const calcularDescuento = (paginas) => {
-  if (paginas > 50) return 0.3;
-  if (paginas > 30) return 0.2;
-  if (paginas > 20) return 0.15;
-  if (paginas > 10) return 0.1;
-  return 0;
-};
-
-const FileUploader = () => {
-  const [archivo, setArchivo] = useState(null);
-  const [tipoPapel, setTipoPapel] = useState("");
   const [nombreCliente, setNombreCliente] = useState("");
   const [estado, setEstado] = useState("");
   const [totalPaginas, setTotalPaginas] = useState(null);
