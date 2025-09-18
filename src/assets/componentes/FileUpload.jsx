@@ -31,7 +31,6 @@ const calcularDescuento = (paginas) => {
 };
 
 const FileUploader = () => {
-  // 🔐 Redirección automática a HTTPS
   useEffect(() => {
     if (window.location.protocol === "http:") {
       window.location.href = window.location.href.replace("http:", "https:");
@@ -133,7 +132,8 @@ const FileUploader = () => {
             <SelectorPapel value={tipoPapel} onChange={setTipoPapel} />
             <InputCliente value={nombreCliente} onChange={setNombreCliente} />
 
-            <div>
+            {/* Teléfono con estilo igualado */}
+            <div className="space-y-1">
               <label className="block text-sm font-medium text-gray-700">📱 Teléfono de contacto</label>
               <input
                 type="tel"
@@ -142,7 +142,7 @@ const FileUploader = () => {
                 onChange={(e) => setTelefonoCliente(e.target.value)}
                 placeholder="Ej: 11-1234-5678"
                 required
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-violet-500 focus:border-violet-500 sm:text-sm"
+                className="w-full px-4 py-2 rounded-md border border-gray-300 shadow-sm focus:ring-violet-500 focus:border-violet-500 text-sm"
               />
             </div>
 
