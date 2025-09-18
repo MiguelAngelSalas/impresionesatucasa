@@ -122,9 +122,13 @@ const FileUploader = () => {
             🎉 ¡Descuento automático desde 10 hojas en adelante!
           </div>
 
-          <h2 className="text-xl sm:text-2xl font-bold text-violet-700 mb-6 text-center break-words">
+          <h2 className="text-xl sm:text-2xl font-bold text-violet-700 mb-4 text-center break-words">
             Subí tu archivo para imprimir
           </h2>
+
+          <div className="bg-yellow-50 border border-yellow-200 text-yellow-700 mb-6 text-sm sm:text-base font-medium px-4 py-2 rounded-lg shadow-sm text-center break-words">
+            📐 Las hojas se imprimen en tamaño A4 (210 × 297 mm)
+          </div>
 
           <div className="space-y-6 sm:space-y-4">
             <InputArchivo onChange={manejarCambioArchivo} totalPaginas={totalPaginas} />
@@ -132,7 +136,6 @@ const FileUploader = () => {
             <SelectorPapel value={tipoPapel} onChange={setTipoPapel} />
             <InputCliente value={nombreCliente} onChange={setNombreCliente} />
 
-            {/* Teléfono con estilo igualado */}
             <div className="space-y-1">
               <label className="block text-sm font-medium text-gray-700">📱 Teléfono de contacto</label>
               <input
@@ -167,7 +170,7 @@ const FileUploader = () => {
 
             {mostrarMensajeContacto && (
               <div className="bg-green-100 border border-green-300 text-green-800 text-sm font-medium px-4 py-2 rounded-lg shadow-sm text-center mt-4 break-words">
-                📞 En breve nos comunicaremos por WhatsApp desde el número <strong>11-2390-9529</strong>
+                📞 En breve nos comunicaremos por WhatsApp para confirmar tu pedido
               </div>
             )}
           </div>
