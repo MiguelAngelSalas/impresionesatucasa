@@ -31,6 +31,7 @@ const calcularDescuento = (paginas) => {
 };
 
 const FileUploader = () => {
+  // 🔐 Redirección automática a HTTPS
   useEffect(() => {
     if (window.location.protocol === "http:") {
       window.location.href = window.location.href.replace("http:", "https:");
@@ -41,6 +42,7 @@ const FileUploader = () => {
   const [tipoPapel, setTipoPapel] = useState("");
   const [nombreCliente, setNombreCliente] = useState("");
   const [telefonoCliente, setTelefonoCliente] = useState("");
+  const [domicilioCliente, setDomicilioCliente] = useState("");
   const [estado, setEstado] = useState("");
   const [totalPaginas, setTotalPaginas] = useState(null);
   const [mostrarMensajeContacto, setMostrarMensajeContacto] = useState(false);
@@ -89,10 +91,10 @@ const FileUploader = () => {
   };
 
   const manejarEnvio = async () => {
-    const telefonoNormalizado = telefonoCliente.trim().replace(/\s+/g, '');
+    const telefonoNormalizado = telefonoCliente.trim().replace(/\s+/g, "");
 
-    if (!archivo || !tipoPapel || !telefonoNormalizado) {
-      setEstado("⚠️ Faltan datos: archivo, tipo de papel y teléfono.");
+    if (!archivo || !tipoPapel || !telefonoNormalizado || !domicilioCliente.trim()) {
+      setEstado("⚠️ Faltan datos: archivo, tipo de papel, teléfono o domicilio.");
       return;
     }
 
@@ -100,17 +102,25 @@ const FileUploader = () => {
     const nuevoNombre = `${nombreCliente}_${telefonoNormalizado}_${totalPaginas}.${extension}`;
     const archivoRenombrado = new File([archivo], nuevoNombre, { type: archivo.type });
 
-    const { mensaje, pedido } = await subirArchivo({
-      archivo: archivoRenombrado,
-      tipoPapel,
-      nombreCliente,
-      telefonoCliente: telefonoNormalizado,
-      paginas: totalPaginas,
-    });
+    setEstado("⏳ Enviando pedido...");
 
-    setEstado(mensaje);
-    if (pedido?.paginas) setTotalPaginas(pedido.paginas);
-    setMostrarMensajeContacto(true);
+    try {
+      const { mensaje, pedido } = await subirArchivo({
+        archivo: archivoRenombrado,
+        tipoPapel,
+        nombreCliente,
+        telefonoCliente: telefonoNormalizado,
+        domicilioCliente,
+        paginas: totalPaginas,
+      });
+
+      setEstado(mensaje || "✅ Pedido recibido.");
+      if (pedido?.paginas) setTotalPaginas(pedido.paginas);
+      setMostrarMensajeContacto(true);
+    } catch (err) {
+      console.error(err);
+      setEstado("❌ Error al enviar el pedido. Intentá nuevamente.");
+    }
   };
 
   return (
@@ -144,6 +154,19 @@ const FileUploader = () => {
                 value={telefonoCliente}
                 onChange={(e) => setTelefonoCliente(e.target.value)}
                 placeholder="Ej: 11-1234-5678"
+                required
+                className="w-full px-4 py-2 rounded-md border border-gray-300 shadow-sm focus:ring-violet-500 focus:border-violet-500 text-sm"
+              />
+            </div>
+
+            {/* Domicilio de entrega */}
+            <div className="space-y-1">
+              <label className="block text-sm font-medium text-gray-700">📍 Domicilio de entrega</label>
+              <input
+                type="text"
+                value={domicilioCliente}
+                onChange={(e) => setDomicilioCliente(e.target.value)}
+                placeholder="Ej: Av. Alsina 123, Lomas de Zamora"
                 required
                 className="w-full px-4 py-2 rounded-md border border-gray-300 shadow-sm focus:ring-violet-500 focus:border-violet-500 text-sm"
               />
