@@ -13,13 +13,13 @@ import { subirArchivo } from "../../services/api";
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
 const preciosPorPapel = {
-  fotoFino: 1420,
-  fotoGrueso: 1520,
-  fotoPremium: 2180,
-  mateFino: 1460,
-  mateGrueso: 1540,
-  mateGruesoBiFaz: 1700,
-  styckers: 2440,
+  fotoFino: 1065,
+  fotoGrueso: 1140,
+  fotoPremium: 1635,
+  mateFino: 1095,
+  mateGrueso: 1155,
+  mateGruesoBiFaz: 1275,
+  styckers: 1830,
 };
 
 const calcularDescuento = (paginas) => {
