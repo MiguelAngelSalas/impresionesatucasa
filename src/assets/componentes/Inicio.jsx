@@ -20,20 +20,23 @@ const Inicio = () => {
     <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="bg-white border border-violet-200 rounded-xl shadow-lg p-6 sm:p-8 text-center transition-all duration-300 hover:shadow-xl mb-10">
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 text-violet-800">
-          Impresiones Personalizadas
+          ¿Necesitás imprimir algo? Te lo llevamos.
         </h1>
         <p className="text-base sm:text-lg text-gray-700 mb-4">
-          Subí tu archivo, elegí el tipo de papel y nosotros nos encargamos del resto.
+          Subís tu archivo, elegís el papel, y nosotros lo imprimimos como vos querés.
         </p>
         <p className="text-base sm:text-lg text-gray-700 mb-4">
-          El precio ya incluye el envío, y te lo mandamos directo a tu domicilio.
+          Lo recibís en tu casa, sin moverte. El precio ya incluye el envío.
         </p>
         <p className="text-base sm:text-lg text-gray-700">
-          Simple, rápido y hecho a tu medida.
+          Rápido, confiable y hecho a tu medida.
         </p>
       </div>
 
       <div className="overflow-x-auto">
+        <h2 className="text-xl sm:text-2xl font-semibold text-violet-700 mb-4 text-center">
+          Papeles que trabajamos
+        </h2>
         <div className="flex space-x-4 pb-4">
           {resmas.map((resma) => (
             <button
