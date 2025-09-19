@@ -12,6 +12,25 @@ const resmas = [
   { id: "autoadhesivoResistente", nombre: "Autoadhesivo resistente al agua 220 Grs", descripcion: "Ideal para etiquetas duraderas y resistentes a la humedad.", imagen: "arjet-filmiloBlancoResistente-88micronesA4.webp" },
 ];
 
+const preguntasFrecuentes = [
+  {
+    pregunta: "¿Qué tipo de archivo puedo subir?",
+    respuesta: "Aceptamos PDF, JPG y PNG. Recomendamos PDF para impresiones más precisas."
+  },
+  {
+    pregunta: "¿Los colores salen igual que en pantalla?",
+    respuesta: "Los colores pueden variar mínimamente respecto a lo que ves en pantalla, ya que cada dispositivo y tipo de papel tiene sus propias características. Usamos materiales de calidad para lograr la mejor fidelidad posible."
+  },
+  {
+    pregunta: "¿Cuánto tarda el envío?",
+    respuesta: "Organizamos las entregas según el horario en que se realiza el pedido. Si hacés tu pedido antes de las 12:00 hs, entra en la ruta de reparto del mismo día (por la tarde). Los pedidos realizados hasta las 17:00 hs se preparan para la entrega al día siguiente. Este sistema nos permite mantener un ritmo de trabajo ágil y ordenado, asegurando que cada impresión llegue en tiempo y forma."
+  },
+  {
+    pregunta: "¿Qué pasa si la impresión no sale bien?",
+    respuesta: "Nos encargamos de revisar cada archivo antes de imprimir para evitar errores como líneas, cortes o colores fuera de lugar. Si el resultado final tiene algún problema que no estaba en el archivo original —como errores de impresión o papel dañado— no hay drama: lo reimprimimos sin costo. Siempre buscamos la mayor fidelidad posible."
+  }
+];
+
 const Inicio = () => {
   const [resmaSeleccionada, setResmaSeleccionada] = useState(null);
 
@@ -58,8 +77,21 @@ const Inicio = () => {
           />
         </div>
       )}
+
+      {/* Preguntas frecuentes */}
+      <div className="mt-16">
+        <h2 className="text-2xl font-bold text-violet-800 mb-6 text-center">Preguntas Frecuentes</h2>
+        <div className="space-y-6">
+          {preguntasFrecuentes.map((item, index) => (
+            <div key={index} className="bg-white border border-gray-200 rounded-lg p-6 shadow">
+              <h3 className="text-lg font-semibold text-gray-800 mb-2">{item.pregunta}</h3>
+              <p className="text-gray-700">{item.respuesta}</p>
+            </div>
+          ))}
+        </div>
+      </div>
     </section>
   );
 };
 
-export default Inicio;
+export default Inicio
