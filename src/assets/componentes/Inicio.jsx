@@ -7,10 +7,10 @@ const resmas = [
   { id: "mateBifaz", nombre: "Mate bifaz 200 Grs", descripcion: "Impresión doble faz sin transparencias.", imagen: "arjet-mateBifaz-200grA4.webp" },
   { id: "fotoFino", nombre: "Foto fino 140 Grs", descripcion: "Acabado brillante, ideal para flyers y fotos.", imagen: "global-fotoFino-140grA4.jpg" },
   { id: "fotoGrueso", nombre: "Foto grueso 200 Grs", descripcion: "Alta calidad para impresiones premium.", imagen: "arjet-fotoGrueso-200grA4.webp" },
-  { id: "fotoPremium", nombre: "Foto premium 250 Grs", descripcion: "Acabado superior para fotos de alta definición.", imagen: "global-fotoPremium-260grA4.jpg" },
-  { id: "autoadhesivo", nombre: "Autoadhesivo 150 Grs", descripcion: "Pegatina estándar para etiquetas y promociones.", imagen: "global-autadhesivo-135grA4.webp" },
-  { id: "autoadhesivoPremium", nombre: "Autoadhesivo premium 200 Grs", descripcion: "Pegatina de alta calidad con mejor adherencia.", imagen: "arjet-autoadhesivoPremium-115grA4.webp" },
-  { id: "autoadhesivoResistente", nombre: "Autoadhesivo resistente al agua 220 Grs", descripcion: "Ideal para etiquetas duraderas y resistentes a la humedad.", imagen: "arjet-filmiloBlancoResistente-88micronesA4.webp" },
+  { id: "fotoPremium", nombre: "Foto premium 260 Grs", descripcion: "Acabado superior para fotos de alta definición.", imagen: "global-fotoPremium-260grA4.jpg" },
+  { id: "autoadhesivo", nombre: "Autoadhesivo 135 Grs", descripcion: "Pegatina estándar para etiquetas y promociones.", imagen: "global-autadhesivo-135grA4.webp" },
+  { id: "autoadhesivoPremium", nombre: "Autoadhesivo premium 115 Grs", descripcion: "Pegatina de alta calidad con mejor adherencia.", imagen: "arjet-autoadhesivoPremium-115grA4.webp" },
+  { id: "autoadhesivoResistente", nombre: "Autoadhesivo resistente al agua 88 Micrones", descripcion: "Ideal para etiquetas duraderas y resistentes a la humedad.", imagen: "arjet-filmiloBlancoResistente-88micronesA4.webp" },
 ];
 
 const Inicio = () => {
@@ -72,3 +72,4 @@ const Inicio = () => {
 };
 
 export default Inicio;
+
