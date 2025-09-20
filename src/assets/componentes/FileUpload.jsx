@@ -206,4 +206,10 @@ const FileUploader = ({ addToCart }) => {
 
         <div className="w-full md:w-72 flex flex-col items-center gap-4">
           <ListaPreciosPapel />
-          <div className="bg-violet-100 text-violet-700 text-sm font-semibold px-4 py-
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default FileUploader;
