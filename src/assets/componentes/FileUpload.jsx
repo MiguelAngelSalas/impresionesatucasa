@@ -30,7 +30,7 @@ const calcularDescuento = (paginas) => {
   return 0;
 };
 
-const FileUploader = () => {
+const FileUploader = ({ addToCart }) => {
   useEffect(() => {
     if (window.location.protocol === "http:") {
       window.location.href = window.location.href.replace("http:", "https:");
@@ -113,26 +113,47 @@ const FileUploader = () => {
     setMostrarMensajeContacto(true);
   };
 
+  const agregarAlCarrito = () => {
+    if (!archivo || !tipoPapel || !totalPaginas || !precioFinal) {
+      setEstado("⚠️ Faltan datos para agregar al carrito.");
+      return;
+    }
+
+    const producto = {
+      id: `${archivo.name}-${tipoPapel}-${totalPaginas}`,
+      name: `Impresión PDF (${tipoPapel})`,
+      quantity: 1,
+      price: precioFinal,
+      detalles: {
+        archivo: archivo.name,
+        paginas: totalPaginas,
+        papel: tipoPapel,
+      },
+    };
+
+    addToCart(producto);
+    setEstado("🛒 Agregado al carrito correctamente.");
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-violet-100 to-white flex items-center justify-center px-4 py-10 overflow-y-auto">
       <div className="flex flex-col md:flex-row flex-wrap gap-6 w-full max-w-4xl mx-auto">
-        {/* Panel principal */}
         <div className="flex-1 w-full bg-white rounded-xl shadow-lg p-6 sm:p-8">
-          <div className="bg-violet-50 border border-violet-200 text-violet-700 my-4 text-sm sm:text-base font-medium px-4 py-2 rounded-lg shadow-sm text-center break-words">
+          <div className="bg-violet-50 border border-violet-200 text-violet-700 my-4 text-sm sm:text-base font-medium px-4 py-2 rounded-lg shadow-sm text-center">
             🎉 ¡Descuento automático desde 10 hojas en adelante!
           </div>
 
-          <h2 className="text-xl sm:text-2xl font-bold text-violet-700 mb-4 text-center break-words">
+          <h2 className="text-xl sm:text-2xl font-bold text-violet-700 mb-4 text-center">
             Subí tu archivo para imprimir
           </h2>
 
-          <div className="bg-yellow-50 border border-yellow-200 text-yellow-700 mb-6 text-sm sm:text-base font-medium px-4 py-2 rounded-lg shadow-sm text-center break-words">
+          <div className="bg-yellow-50 border border-yellow-200 text-yellow-700 mb-6 text-sm sm:text-base font-medium px-4 py-2 rounded-lg shadow-sm text-center">
             📐 Las hojas se imprimen en tamaño A4 (210 × 297 mm)
           </div>
 
           <div className="space-y-6 sm:space-y-4">
             <InputArchivo onChange={manejarCambioArchivo} totalPaginas={totalPaginas} />
-            <p className="text-sm text-gray-500 text-center break-words">Solo archivos PDF. Tamaño máximo 20MB.</p>
+            <p className="text-sm text-gray-500 text-center">Solo archivos PDF. Tamaño máximo 20MB.</p>
             <SelectorPapel value={tipoPapel} onChange={setTipoPapel} />
             <InputCliente value={nombreCliente} onChange={setNombreCliente} />
 
@@ -150,7 +171,7 @@ const FileUploader = () => {
             </div>
 
             {totalPaginas && tipoPapel && (
-              <div className="text-center text-violet-700 font-semibold text-lg space-y-1 break-words">
+              <div className="text-center text-violet-700 font-semibold text-lg space-y-1">
                 📄 Total páginas: {totalPaginas} <br />
                 🧾 Papel seleccionado: {tipoPapel} <br />
                 {descuento > 0 ? (
@@ -166,26 +187,23 @@ const FileUploader = () => {
             )}
 
             <BotonEnviar onClick={manejarEnvio} />
+            <button
+              onClick={agregarAlCarrito}
+              className="w-full bg-violet-600 hover:bg-violet-700 text-white font-semibold py-2 px-4 rounded-md shadow-sm transition"
+            >
+              🛒 Agregar al carrito
+            </button>
+
             <MensajeEstado estado={estado} />
 
             {mostrarMensajeContacto && (
-              <div className="bg-green-100 border border-green-300 text-green-800 text-sm font-medium px-4 py-2 rounded-lg shadow-sm text-center mt-4 break-words">
+              <div className="bg-green-100 border border-green-300 text-green-800 text-sm font-medium px-4 py-2 rounded-lg shadow-sm text-center mt-4">
                 📞 En breve nos comunicaremos por WhatsApp para confirmar tu pedido
               </div>
             )}
           </div>
         </div>
 
-        {/* Panel lateral */}
         <div className="w-full md:w-72 flex flex-col items-center gap-4">
           <ListaPreciosPapel />
-          <div className="bg-violet-100 text-violet-700 text-sm font-semibold px-4 py-2 rounded-lg shadow text-center break-words">
-            🚚 ¡Envío gratis en todos tus pedidos!
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-export default FileUploader;
+          <div className="bg-violet-100 text-violet-700 text-sm font-semibold px-4 py-
