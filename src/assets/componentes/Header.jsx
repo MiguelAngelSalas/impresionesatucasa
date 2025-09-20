@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { FaShoppingCart } from 'react-icons/fa';
 
 const Header = ({ cartCount }) => {
   return (
@@ -20,8 +19,8 @@ const Header = ({ cartCount }) => {
           <Link to="/resmas" className="text-sm font-medium text-violet-700 hover:text-violet-900 transition">
             Resmas
           </Link>
-          <Link to="/carrito" className="relative text-violet-700 hover:text-violet-900 transition">
-            <FaShoppingCart size={20} />
+          <Link to="/carrito" className="relative text-sm font-medium text-violet-700 hover:text-violet-900 transition">
+            🛒 Carrito
             {cartCount > 0 && (
               <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full px-1">
                 {cartCount}
@@ -35,3 +34,4 @@ const Header = ({ cartCount }) => {
 };
 
 export default Header;
+
