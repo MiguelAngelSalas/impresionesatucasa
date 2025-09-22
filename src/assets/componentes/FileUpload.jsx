@@ -120,7 +120,7 @@ const FileUploader = ({ addToCart }) => {
     }
 
     const producto = {
-      id: `${archivo.name}-${tipoPapel}-${totalPaginas}`,
+      id: `${archivo.name}-${tipoPapel}-${totalPaginas}-${Date.now()}`, // ID único
       name: `Impresión PDF (${tipoPapel})`,
       quantity: 1,
       price: precioFinal,
