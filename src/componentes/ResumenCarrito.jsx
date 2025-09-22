@@ -1,22 +1,32 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 
-const ResumenCarrito = ({
-  carrito,
-  removeFromCart,
-  totalPaginas,
-  totalSinDescuento,
-  descuento,
-  totalConDescuento,
-}) => {
-  useEffect(() => {
-    console.log("🧾 Props recibidos en ResumenCarrito:", {
-      carrito,
-      totalPaginas,
-      totalSinDescuento,
-      descuento,
-      totalConDescuento,
-    });
+const calcularDescuento = (paginas) => {
+  if (paginas > 50) return 0.3;
+  if (paginas > 30) return 0.2;
+  if (paginas > 20) return 0.15;
+  if (paginas > 10) return 0.1;
+  return 0;
+};
+
+const ResumenCarrito = ({ carrito, removeFromCart }) => {
+  const resumen = useMemo(() => {
+    const totalPaginas = carrito.reduce(
+      (acc, item) => acc + (item.detalles?.paginas || 0),
+      0
+    );
+    const totalSinDescuento = carrito.reduce(
+      (acc, item) => acc + (item.price || 0),
+      0
+    );
+    const descuento = calcularDescuento(totalPaginas);
+    const totalConDescuento = Math.round(totalSinDescuento * (1 - descuento));
+
+    return { totalPaginas, totalSinDescuento, descuento, totalConDescuento };
   }, [carrito]);
+
+  useEffect(() => {
+    console.log("🧾 ResumenCarrito actualizado:", resumen);
+  }, [resumen]);
 
   return (
     <div className="mt-10 bg-gray-50 border border-gray-200 rounded-lg p-4 shadow-sm">
@@ -52,16 +62,16 @@ const ResumenCarrito = ({
           </ul>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm sm:text-base font-semibold text-violet-700">
-            <div>📄 Total de páginas: {totalPaginas ?? "?"}</div>
+            <div>📄 Total de páginas: {resumen.totalPaginas}</div>
             <div>
               💰 Precio sin descuento:{" "}
               <span className="line-through text-gray-500">
-                ${totalSinDescuento ?? "?"}
+                ${resumen.totalSinDescuento}
               </span>
             </div>
-            <div>🎉 Descuento aplicado: {(descuento ?? 0) * 100}%</div>
+            <div>🎉 Descuento aplicado: {resumen.descuento * 100}%</div>
             <div className="text-green-700 text-lg sm:text-xl">
-              💸 Total final a pagar: ${totalConDescuento ?? "?"}
+              💸 Total final a pagar: ${resumen.totalConDescuento}
             </div>
           </div>
         </>
