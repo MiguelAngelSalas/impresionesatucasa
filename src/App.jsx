@@ -1,73 +1,46 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Routes, Route } from "react-router-dom";
+import reactLogo from "./assets/react.svg";
+import viteLogo from "/vite.svg";
 import "./App.css";
 
-import Header from "./componentes/Header";
-import Inicio from "./componentes/Inicio";
-import Resmas from "./componentes/Resmas";
-import VistaFormulario from "./componentes/VistaFormulario";
-import ResumenCarrito from "./componentes/ResumenCarrito";
-
-import { calcularDescuento } from "./utilidades/calcularDescuento";
+import FileUpload from "./assets/componentes/FileUpload";
+import Header from "./assets/componentes/Header";
+import Inicio from "./assets/componentes/Inicio";
+import Resmas from "./assets/componentes/Resmas";
 
 function App() {
   const [carrito, setCarrito] = useState([]);
-
-  // 🔄 Cargar carrito desde localStorage al iniciar
-  useEffect(() => {
-    const carritoGuardado = localStorage.getItem("carrito");
-    if (carritoGuardado) {
-      setCarrito(JSON.parse(carritoGuardado));
-    }
-  }, []);
-
-  // 💾 Guardar carrito en localStorage cada vez que cambie
-  useEffect(() => {
-    localStorage.setItem("carrito", JSON.stringify(carrito));
-  }, [carrito]);
 
   const addToCart = (producto) => {
     setCarrito((prevCarrito) => [...prevCarrito, producto]);
     console.log("🛒 Producto agregado:", producto);
   };
 
-  const removeFromCart = (id) => {
-    setCarrito((prevCarrito) => prevCarrito.filter((item) => item.id !== id));
-  };
-
-  const vaciarCarrito = () => {
-    setCarrito([]);
-    localStorage.removeItem("carrito");
-  };
-
-  const totalPaginas = carrito.reduce(
-    (acc, item) => acc + (item.detalles.paginas || 0),
-    0
-  );
-
-  const totalSinDescuento = carrito.reduce((acc, item) => acc + item.price, 0);
-  const descuento = calcularDescuento(totalPaginas);
-  const totalConDescuento = Math.round(totalSinDescuento * (1 - descuento));
-
   return (
     <>
-      <Header />
-      <main className="py-6 px-4">
+@@ -17,11 +24,27 @@ function App() {
         <Routes>
           <Route path="/resmas" element={<Resmas />} />
           <Route path="/" element={<Inicio />} />
-          <Route path="/upload" element={<VistaFormulario addToCart={addToCart} />} />
+          <Route path="/upload" element={<FileUpload addToCart={addToCart} />} />
         </Routes>
 
-        <ResumenCarrito
-          carrito={carrito}
-          removeFromCart={removeFromCart}
-          vaciarCarrito={vaciarCarrito} // ✅ nuevo prop
-          totalPaginas={totalPaginas}
-          totalSinDescuento={totalSinDescuento}
-          descuento={descuento}
-          totalConDescuento={totalConDescuento}
-        />
+        {/* Vista rápida del carrito */}
+        <div className="mt-10 bg-gray-50 border border-gray-200 rounded-lg p-4 shadow-sm">
+          <h2 className="text-xl font-bold text-violet-700 mb-2">🛒 Carrito actual</h2>
+          {carrito.length === 0 ? (
+            <p className="text-gray-500">Todavía no hay productos en el carrito.</p>
+          ) : (
+            <ul className="list-disc pl-5 space-y-1">
+              {carrito.map((item) => (
+                <li key={item.id}>
+                  <span className="font-medium">{item.name}</span> – ${item.price}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
       </main>
     </>
   );
