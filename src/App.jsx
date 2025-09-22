@@ -6,7 +6,7 @@ import Header from "./componentes/Header";
 import Inicio from "./componentes/Inicio";
 import Resmas from "./componentes/Resmas";
 import VistaFormulario from "./componentes/VistaFormulario";
-import ResumenCarrito from "./assets/componentes/ResumenCarrito";
+import ResumenCarrito from "./componentes/ResumenCarrito";
 
 import { calcularDescuento } from "./utilidades/calcularDescuento";
 
