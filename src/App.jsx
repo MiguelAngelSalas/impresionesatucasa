@@ -7,7 +7,7 @@ import Header from "./assets/componentes/Header";
 import Inicio from "./assets/componentes/Inicio";
 import Resmas from "./assets/componentes/Resmas";
 
-// Función de descuento reutilizada
+// Función para calcular descuento según cantidad de páginas
 const calcularDescuento = (paginas) => {
   if (paginas > 50) return 0.3;
   if (paginas > 30) return 0.2;
@@ -25,7 +25,10 @@ function App() {
   };
 
   // Total de páginas en el carrito
-  const totalPaginas = carrito.reduce((acc, item) => acc + (item.detalles.paginas || 0), 0);
+  const totalPaginas = carrito.reduce(
+    (acc, item) => acc + (item.detalles.paginas || 0),
+    0
+  );
 
   // Total sin descuento
   const totalSinDescuento = carrito.reduce((acc, item) => acc + item.price, 0);
@@ -44,9 +47,10 @@ function App() {
           <Route path="/upload" element={<FileUpload addToCart={addToCart} />} />
         </Routes>
 
-        {/* Vista del carrito con total y descuento */}
+        {/* Vista del carrito con resumen de precios */}
         <div className="mt-10 bg-gray-50 border border-gray-200 rounded-lg p-4 shadow-sm">
           <h2 className="text-xl font-bold text-violet-700 mb-2">🛒 Carrito actual</h2>
+
           {carrito.length === 0 ? (
             <p className="text-gray-500">Todavía no hay productos en el carrito.</p>
           ) : (
@@ -59,11 +63,13 @@ function App() {
                 ))}
               </ul>
 
-              <div className="text-violet-700 font-semibold space-y-1 text-sm sm:text-base">
-                📄 Total de páginas: {totalPaginas} <br />
-                💰 Precio sin descuento: <span className="line-through text-gray-500">${totalSinDescuento}</span> <br />
-                🎉 Descuento aplicado: {descuento * 100}% <br />
-                💸 Total final: ${totalConDescuento}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm sm:text-base font-semibold text-violet-700">
+                <div>📄 Total de páginas: {totalPaginas}</div>
+                <div>💰 Precio sin descuento: <span className="line-through text-gray-500">${totalSinDescuento}</span></div>
+                <div>🎉 Descuento aplicado: {descuento * 100}%</div>
+                <div className="text-green-700 text-lg sm:text-xl">
+                  💸 Total final a pagar: ${totalConDescuento}
+                </div>
               </div>
             </>
           )}
