@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import "./App.css";
 
@@ -13,6 +13,19 @@ import { calcularDescuento } from "./utilidades/calcularDescuento";
 function App() {
   const [carrito, setCarrito] = useState([]);
 
+  // 🔄 Cargar carrito desde localStorage al iniciar
+  useEffect(() => {
+    const carritoGuardado = localStorage.getItem("carrito");
+    if (carritoGuardado) {
+      setCarrito(JSON.parse(carritoGuardado));
+    }
+  }, []);
+
+  // 💾 Guardar carrito en localStorage cada vez que cambie
+  useEffect(() => {
+    localStorage.setItem("carrito", JSON.stringify(carrito));
+  }, [carrito]);
+
   const addToCart = (producto) => {
     setCarrito((prevCarrito) => [...prevCarrito, producto]);
     console.log("🛒 Producto agregado:", producto);
@@ -20,6 +33,11 @@ function App() {
 
   const removeFromCart = (id) => {
     setCarrito((prevCarrito) => prevCarrito.filter((item) => item.id !== id));
+  };
+
+  const vaciarCarrito = () => {
+    setCarrito([]);
+    localStorage.removeItem("carrito");
   };
 
   const totalPaginas = carrito.reduce(
@@ -44,6 +62,7 @@ function App() {
         <ResumenCarrito
           carrito={carrito}
           removeFromCart={removeFromCart}
+          vaciarCarrito={vaciarCarrito} // ✅ nuevo prop
           totalPaginas={totalPaginas}
           totalSinDescuento={totalSinDescuento}
           descuento={descuento}
