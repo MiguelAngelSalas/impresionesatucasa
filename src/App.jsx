@@ -33,25 +33,30 @@ function App() {
 
   return (
     <>
-      <Header />
+      <Header cartCount={carrito.length} />
       <main className="py-6 px-4">
         <Routes>
-          <Route path="/resmas" element={<Resmas />} />
           <Route path="/" element={<Inicio />} />
+          <Route path="/resmas" element={<Resmas />} />
           <Route path="/upload" element={<VistaFormulario addToCart={addToCart} />} />
+          <Route
+            path="/carrito"
+            element={
+              <ResumenCarrito
+                carrito={carrito}
+                removeFromCart={removeFromCart}
+                totalPaginas={totalPaginas}
+                totalSinDescuento={totalSinDescuento}
+                descuento={descuento}
+                totalConDescuento={totalConDescuento}
+              />
+            }
+          />
         </Routes>
-
-        <ResumenCarrito
-          carrito={carrito}
-          removeFromCart={removeFromCart}
-          totalPaginas={totalPaginas}
-          totalSinDescuento={totalSinDescuento}
-          descuento={descuento}
-          totalConDescuento={totalConDescuento}
-        />
       </main>
     </>
   );
 }
 
 export default App;
+
