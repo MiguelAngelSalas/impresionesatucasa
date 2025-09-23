@@ -8,14 +8,14 @@ const calcularDescuento = (paginas) => {
   return 0;
 };
 
-const ResumenCarrito = ({ carrito, removeFromCart }) => {
+const ResumenCarrito = ({ carrito = [], removeFromCart }) => {
   const resumen = useMemo(() => {
     const totalPaginas = carrito.reduce(
-      (acc, item) => acc + (item.detalles?.paginas || 0),
+      (acc, item) => acc + (Number(item.detalles?.paginas) || 0),
       0
     );
     const totalSinDescuento = carrito.reduce(
-      (acc, item) => acc + (item.price || 0),
+      (acc, item) => acc + (Number(item.price) || 0),
       0
     );
     const descuento = calcularDescuento(totalPaginas);
@@ -32,25 +32,27 @@ const ResumenCarrito = ({ carrito, removeFromCart }) => {
     <div className="mt-10 bg-gray-50 border border-gray-200 rounded-lg p-4 shadow-sm">
       <h2 className="text-xl font-bold text-violet-700 mb-2">🛒 Carrito actual</h2>
 
-      {Array.isArray(carrito) && carrito.length === 0 ? (
+      {carrito.length === 0 ? (
         <p className="text-gray-500">Todavía no hay productos en el carrito.</p>
       ) : (
         <>
           <ul className="space-y-3 mb-6">
             {carrito.map((item) => (
               <li
-                key={item.id}
+                key={item.id || item.name} // fallback si no hay id
                 className="flex justify-between items-center bg-white border border-gray-200 rounded-md px-4 py-2 shadow-sm"
               >
                 <div>
-                  <span className="font-medium text-violet-700">{item.name}</span> – ${item.price} <br />
+                  <span className="font-medium text-violet-700">{item.name}</span>{" "}
+                  – ${Number(item.price) || 0} <br />
                   <span className="text-sm text-gray-600">
-                    📄 {item.detalles?.paginas} hoja{item.detalles?.paginas > 1 ? "s" : ""}
+                    📄 {item.detalles?.paginas || 0} hoja
+                    {(item.detalles?.paginas || 0) !== 1 ? "s" : ""}
                   </span>
                 </div>
                 <button
                   onClick={() => {
-                    console.log("🗑 Eliminando:", item.id);
+                    console.log("🗑 Eliminando:", item.id || item.name);
                     removeFromCart(item.id);
                   }}
                   className="bg-rose-500 hover:bg-rose-600 text-white text-xs font-bold px-3 py-1 rounded-md shadow-sm transition"
