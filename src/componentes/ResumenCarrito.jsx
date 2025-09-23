@@ -1,6 +1,7 @@
-// ResumenCarrito.jsx
+import React from "react";
+
 const ResumenCarrito = ({
-  carrito = [],
+  carrito,
   removeFromCart,
   totalPaginas,
   totalSinDescuento,
@@ -8,51 +9,42 @@ const ResumenCarrito = ({
   totalConDescuento,
 }) => {
   return (
-    <div className="mt-10 bg-gray-50 border border-gray-200 rounded-lg p-4 shadow-sm">
-      <h2 className="text-xl font-bold text-violet-700 mb-2">🛒 Carrito actual</h2>
+    <div className="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow-md">
+      <h2 className="text-xl font-bold mb-4">🛒 Resumen del Carrito</h2>
 
       {carrito.length === 0 ? (
-        <p className="text-gray-500">Todavía no hay productos en el carrito.</p>
+        <p className="text-gray-600">El carrito está vacío</p>
       ) : (
-        <>
-          <ul className="space-y-3 mb-6">
-            {carrito.map((item) => (
-              <li
-                key={item.id || item.name}
-                className="flex justify-between items-center bg-white border border-gray-200 rounded-md px-4 py-2 shadow-sm"
-              >
-                <div>
-                  <span className="font-medium text-violet-700">{item.name}</span> – $
-                  {Number(item.price) || 0} <br />
-                  <span className="text-sm text-gray-600">
-                    📄 {item.detalles?.paginas || 0} hoja
-                    {(item.detalles?.paginas || 0) !== 1 ? "s" : ""}
-                  </span>
-                </div>
+        <ul className="divide-y divide-gray-200">
+          {carrito.map((item, index) => (
+            <li key={item.id || index} className="py-3 flex justify-between items-center">
+              <div>
+                <p className="font-medium">{item.name || "Producto sin nombre"}</p>
+                <p className="text-sm text-gray-500">{item.detalles?.paginas || 0} páginas</p>
+              </div>
+              <div className="flex items-center space-x-3">
+                <p className="font-semibold">${item.price || 0}</p>
                 <button
                   onClick={() => removeFromCart(item.id)}
-                  className="bg-rose-500 hover:bg-rose-600 text-white text-xs font-bold px-3 py-1 rounded-md shadow-sm transition"
+                  className="text-red-500 hover:text-red-700"
                 >
-                  ❌ Eliminar
+                  ❌
                 </button>
-              </li>
-            ))}
-          </ul>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm sm:text-base font-semibold text-violet-700">
-            <div>📄 Total de páginas: {totalPaginas}</div>
-            <div>
-              💰 Precio sin descuento:{" "}
-              <span className="line-through text-gray-500">
-                ${totalSinDescuento}
-              </span>
-            </div>
-            <div>🎉 Descuento aplicado: {descuento * 100}%</div>
-            <div className="text-green-700 text-lg sm:text-xl">
-              💸 Total final a pagar: ${totalConDescuento}
-            </div>
-          </div>
-        </>
+      {carrito.length > 0 && (
+        <div className="mt-6 border-t pt-4 space-y-2">
+          <p>Total de páginas: <strong>{totalPaginas}</strong></p>
+          <p>Total sin descuento: <strong>${totalSinDescuento}</strong></p>
+          <p>Descuento aplicado: <strong>{descuento * 100}%</strong></p>
+          <p className="text-lg font-bold">
+            Total con descuento: ${totalConDescuento}
+          </p>
+        </div>
       )}
     </div>
   );
