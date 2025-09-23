@@ -8,7 +8,7 @@ import Resmas from "./componentes/Resmas";
 import VistaFormulario from "./componentes/VistaFormulario";
 import ResumenCarrito from "./componentes/ResumenCarrito";
 
-import { calcularDescuento } from "./utilidades/calcularDescuento";
+import { calcularDescuento } from "./utilidades/calcularDescuento.jsx";
 
 function App() {
   const [carrito, setCarrito] = useState([]);
