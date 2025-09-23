@@ -44,7 +44,7 @@ function App() {
           <Route path="/resmas" element={<Resmas />} />
           <Route
             path="/upload"
-            element={<VistaFormulario addToCart={addToCart} />}
+            element={<VistaFormulario agregarAlCarrito={addToCart} />}
           />
           <Route
             path="/carrito"
