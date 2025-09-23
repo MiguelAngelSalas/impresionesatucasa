@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import "./App.css";
 
@@ -13,7 +13,22 @@ import { calcularDescuento } from "./utilidades/calcularDescuento";
 function App() {
   const [carrito, setCarrito] = useState([]);
 
+  // ✅ Restaurar carrito desde localStorage al montar
+  useEffect(() => {
+    const guardado = localStorage.getItem("carrito");
+    if (guardado) setCarrito(JSON.parse(guardado));
+  }, []);
+
+  // ✅ Guardar carrito en localStorage cada vez que cambia
+  useEffect(() => {
+    localStorage.setItem("carrito", JSON.stringify(carrito));
+  }, [carrito]);
+
   const addToCart = (producto) => {
+    if (!producto || !producto.id || !producto.price || !producto.detalles?.paginas) {
+      console.warn("❌ Producto inválido:", producto);
+      return;
+    }
     setCarrito((prevCarrito) => [...prevCarrito, producto]);
     console.log("🛒 Producto agregado:", producto);
   };
