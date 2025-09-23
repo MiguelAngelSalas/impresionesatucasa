@@ -23,11 +23,15 @@ function App() {
   };
 
   const totalPaginas = carrito.reduce(
-    (acc, item) => acc + (item.detalles.paginas || 0),
+    (acc, item) => acc + (item.detalles?.paginas || 0),
     0
   );
 
-  const totalSinDescuento = carrito.reduce((acc, item) => acc + item.price, 0);
+  const totalSinDescuento = carrito.reduce(
+    (acc, item) => acc + (item.price || 0),
+    0
+  );
+
   const descuento = calcularDescuento(totalPaginas);
   const totalConDescuento = Math.round(totalSinDescuento * (1 - descuento));
 
@@ -38,7 +42,10 @@ function App() {
         <Routes>
           <Route path="/" element={<Inicio />} />
           <Route path="/resmas" element={<Resmas />} />
-          <Route path="/upload" element={<VistaFormulario addToCart={addToCart} />} />
+          <Route
+            path="/upload"
+            element={<VistaFormulario addToCart={addToCart} />}
+          />
           <Route
             path="/carrito"
             element={
@@ -59,4 +66,3 @@ function App() {
 }
 
 export default App;
-
