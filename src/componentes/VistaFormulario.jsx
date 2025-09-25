@@ -9,15 +9,18 @@ import FormularioEnvio from "./FormularioEnvio";
 import MensajeContacto from "./MensajeContacto";
 import ListaPreciosPapel from "./ListaPreciosPapel";
 
-import { preciosPorPapel } from "./constantes/preciosPorPapel";
-import { calcularDescuento } from "./utilidades/calcularDescuento";
-import { subirArchivo } from "../../services/api";
+import { preciosPorPapel } from "./preciosPorPapel";
+import { calcularDescuento } from "../utilidades/calcularDescuento";
+import { subirArchivo } from "../servicios/api";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
-const VistaFormulario = ({ addToCart }) => {
+const VistaFormulario = ({ agregarAlCarrito }) => {
   useEffect(() => {
-    if (window.location.protocol === "http:") {
+    if (
+      window.location.hostname !== "localhost" &&
+      window.location.protocol === "http:"
+    ) {
       window.location.href = window.location.href.replace("http:", "https:");
     }
   }, []);
@@ -32,8 +35,11 @@ const VistaFormulario = ({ addToCart }) => {
 
   const precioUnitario = preciosPorPapel[tipoPapel] || 0;
   const descuento = calcularDescuento(totalPaginas || 0);
-  const precioSinDescuento = totalPaginas && tipoPapel ? totalPaginas * precioUnitario : null;
-  const precioFinal = precioSinDescuento ? Math.round(precioSinDescuento * (1 - descuento)) : null;
+  const precioSinDescuento =
+    totalPaginas && tipoPapel ? totalPaginas * precioUnitario : null;
+  const precioProyectadoConDescuento = precioSinDescuento
+    ? Math.round(precioSinDescuento * (1 - descuento))
+    : null;
 
   const manejarCambioArchivo = async (e) => {
     const archivoSeleccionado = e.target.files[0];
@@ -71,8 +77,29 @@ const VistaFormulario = ({ addToCart }) => {
     }
   };
 
+  const subirACloudinary = async (archivo) => {
+    const url = "https://api.cloudinary.com/v1_1/<tu-cloud-name>/upload";
+    const preset = "<tu-upload-preset>"; // creado en Cloudinary
+
+    const formData = new FormData();
+    formData.append("file", archivo);
+    formData.append("upload_preset", preset);
+
+    try {
+      const res = await fetch(url, {
+        method: "POST",
+        body: formData,
+      });
+      const data = await res.json();
+      return data.secure_url;
+    } catch (error) {
+      console.error("❌ Error al subir a Cloudinary:", error);
+      return null;
+    }
+  };
+
   const manejarEnvio = async () => {
-    const telefonoNormalizado = telefonoCliente.trim().replace(/\s+/g, '');
+    const telefonoNormalizado = telefonoCliente.trim().replace(/\s+/g, "");
 
     if (!archivo || !tipoPapel || !telefonoNormalizado) {
       setEstado("⚠️ Faltan datos: archivo, tipo de papel y teléfono.");
@@ -81,10 +108,20 @@ const VistaFormulario = ({ addToCart }) => {
 
     const extension = archivo.name.split(".").pop();
     const nuevoNombre = `${nombreCliente}_${telefonoNormalizado}_${totalPaginas}.${extension}`;
-    const archivoRenombrado = new File([archivo], nuevoNombre, { type: archivo.type });
+    const archivoRenombrado = new File([archivo], nuevoNombre, {
+      type: archivo.type,
+    });
 
+    // ✅ Subir a Cloudinary
+    const urlCloudinary = await subirACloudinary(archivoRenombrado);
+    if (!urlCloudinary) {
+      setEstado("❌ No se pudo subir el archivo a Cloudinary.");
+      return;
+    }
+
+    // ✅ Enviar pedido al backend
     const { mensaje, pedido } = await subirArchivo({
-      archivo: archivoRenombrado,
+      archivoUrl: urlCloudinary,
       tipoPapel,
       nombreCliente,
       telefonoCliente: telefonoNormalizado,
@@ -96,8 +133,8 @@ const VistaFormulario = ({ addToCart }) => {
     setMostrarMensajeContacto(true);
   };
 
-  const agregarAlCarrito = () => {
-    if (!archivo || !tipoPapel || !totalPaginas || !precioFinal) {
+  const manejarAgregarAlCarrito = () => {
+    if (!archivo || !tipoPapel || !totalPaginas || !precioSinDescuento) {
       setEstado("⚠️ Faltan datos para agregar al carrito.");
       return;
     }
@@ -106,15 +143,17 @@ const VistaFormulario = ({ addToCart }) => {
       id: `${archivo.name}-${tipoPapel}-${totalPaginas}-${Date.now()}`,
       name: `Impresión PDF (${tipoPapel})`,
       quantity: 1,
-      price: precioFinal,
+      price: precioSinDescuento,
       detalles: {
+        tipo: "impresion",
         archivo: archivo.name,
         paginas: totalPaginas,
         papel: tipoPapel,
       },
     };
 
-    addToCart(producto);
+    console.log("📦 Producto listo para carrito:", producto);
+    agregarAlCarrito(producto);
     setEstado("🛒 Agregado al carrito correctamente.");
   };
 
@@ -135,7 +174,10 @@ const VistaFormulario = ({ addToCart }) => {
           </div>
 
           <div className="space-y-6 sm:space-y-4">
-            <CargadorArchivo manejarCambioArchivo={manejarCambioArchivo} totalPaginas={totalPaginas} />
+            <CargadorArchivo
+              manejarCambioArchivo={manejarCambioArchivo}
+              totalPaginas={totalPaginas}
+            />
             <DatosCliente
               tipoPapel={tipoPapel}
               setTipoPapel={setTipoPapel}
@@ -149,11 +191,11 @@ const VistaFormulario = ({ addToCart }) => {
               tipoPapel={tipoPapel}
               precioSinDescuento={precioSinDescuento}
               descuento={descuento}
-              precioFinal={precioFinal}
+              precioFinal={precioProyectadoConDescuento}
             />
             <FormularioEnvio
               manejarEnvio={manejarEnvio}
-              agregarAlCarrito={agregarAlCarrito}
+              manejarAgregarAlCarrito={manejarAgregarAlCarrito}
               estado={estado}
             />
             {mostrarMensajeContacto && <MensajeContacto />}

@@ -10,45 +10,77 @@ import ResumenCarrito from "./componentes/ResumenCarrito";
 
 import { calcularDescuento } from "./utilidades/calcularDescuento.jsx";
 
-function App() {
-  const [carrito, setCarrito] = useState([]);
-
-  // ✅ Restaurar carrito desde localStorage al montar
-  useEffect(() => {
+const obtenerCarritoInicial = () => {
+  try {
     const guardado = localStorage.getItem("carrito");
-    if (guardado) setCarrito(JSON.parse(guardado));
-  }, []);
+    const parsed = JSON.parse(guardado);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+};
 
-  // ✅ Guardar carrito en localStorage cada vez que cambia
+function App() {
+  const [carrito, setCarrito] = useState(obtenerCarritoInicial);
+
   useEffect(() => {
     localStorage.setItem("carrito", JSON.stringify(carrito));
   }, [carrito]);
 
-  const addToCart = (producto) => {
-    if (!producto || !producto.id || !producto.price || !producto.detalles?.paginas) {
+  const agregarAlCarrito = (producto) => {
+    if (!producto || !producto.id || !producto.name || producto.price == null) {
       console.warn("❌ Producto inválido:", producto);
       return;
     }
-    setCarrito((prevCarrito) => [...prevCarrito, producto]);
-    console.log("🛒 Producto agregado:", producto);
+
+    setCarrito((prevCarrito) => {
+      const existe = prevCarrito.find((item) => item.id === producto.id);
+      if (existe && producto.detalles?.tipo === "resma") {
+        return prevCarrito.map((item) =>
+          item.id === producto.id
+            ? { ...item, cantidad: (item.cantidad || 1) + 1 }
+            : item
+        );
+      } else {
+        return [...prevCarrito, { ...producto, cantidad: 1 }];
+      }
+    });
   };
 
-  const removeFromCart = (id) => {
+  const eliminarDelCarrito = (id) => {
     setCarrito((prevCarrito) => prevCarrito.filter((item) => item.id !== id));
   };
 
-  const totalPaginas = carrito.reduce(
-    (acc, item) => acc + (item.detalles?.paginas || 0),
-    0
-  );
+  const vaciarCarrito = () => {
+    setCarrito([]);
+  };
 
-  const totalSinDescuento = carrito.reduce(
-    (acc, item) => acc + (item.price || 0),
+  // ✅ Separar productos por tipo
+  const impresiones = carrito.filter(item => item.detalles?.tipo === "impresion");
+  const resmas = carrito.filter(item => item.detalles?.tipo === "resma");
+
+  // ✅ Calcular totales por tipo
+  const totalPaginas = impresiones.reduce(
+    (acc, item) => acc + (item.detalles?.paginas || 0) * (item.cantidad || 1),
     0
   );
 
   const descuento = calcularDescuento(totalPaginas);
-  const totalConDescuento = Math.round(totalSinDescuento * (1 - descuento));
+
+  const totalImpresionesSinDescuento = impresiones.reduce(
+    (acc, item) => acc + item.price * (item.cantidad || 1),
+    0
+  );
+
+  const totalImpresionesConDescuento = Math.round(totalImpresionesSinDescuento * (1 - descuento));
+
+  const totalResmas = resmas.reduce((acc, item) => {
+    const cantidad = item.cantidad || 1;
+    const pagadas = cantidad - Math.floor(cantidad / 5); // promo 5x4
+    return acc + item.price * pagadas;
+  }, 0);
+
+  const totalFinal = totalImpresionesConDescuento + totalResmas;
 
   return (
     <>
@@ -56,21 +88,27 @@ function App() {
       <main className="py-6 px-4">
         <Routes>
           <Route path="/" element={<Inicio />} />
-          <Route path="/resmas" element={<Resmas />} />
+          <Route
+            path="/resmas"
+            element={<Resmas agregarAlCarrito={agregarAlCarrito} />}
+          />
           <Route
             path="/upload"
-            element={<VistaFormulario agregarAlCarrito={addToCart} />}
+            element={<VistaFormulario agregarAlCarrito={agregarAlCarrito} />}
           />
           <Route
             path="/carrito"
             element={
               <ResumenCarrito
                 carrito={carrito}
-                removeFromCart={removeFromCart}
+                removeFromCart={eliminarDelCarrito}
+                vaciarCarrito={vaciarCarrito}
                 totalPaginas={totalPaginas}
-                totalSinDescuento={totalSinDescuento}
                 descuento={descuento}
-                totalConDescuento={totalConDescuento}
+                totalImpresionesSinDescuento={totalImpresionesSinDescuento}
+                totalImpresionesConDescuento={totalImpresionesConDescuento}
+                totalResmas={totalResmas}
+                totalFinal={totalFinal}
               />
             }
           />
