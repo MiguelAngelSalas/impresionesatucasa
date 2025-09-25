@@ -121,7 +121,7 @@ const VistaFormulario = ({ agregarAlCarrito }) => {
 
     // ✅ Enviar pedido al backend
     try {
-      const { mensaje, pedido: pedidoBackend } = await fetch('https://backendpedidos-production.up.railway.app/api/pedidos', {
+      const response = await fetch('https://backendpedidos-production.up.railway.app/api/pedidos', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -137,16 +137,24 @@ const VistaFormulario = ({ agregarAlCarrito }) => {
           total: precioProyectadoConDescuento,
           fecha: new Date().toISOString(),
         }),
-      }).then((res) => res.json());
+      });
 
-      setEstado(mensaje);
-      setMostrarMensajeContacto(true);
+  if (!response.ok) {
+    const errorText = await response.text();
+    console.error("❌ Error en la respuesta del backend:", errorText);
+    setEstado("❌ Error al procesar el pedido. Detalles en consola.");
+    return;
+  }
 
-    } catch (error) {
-      console.error("❌ Error al enviar el pedido al backend:", error);
-      setEstado("❌ Error al procesar el pedido.");
-    }
-  };
+  const { mensaje, pedido: pedidoBackend } = await response.json();
+
+  setEstado(mensaje);
+  setMostrarMensajeContacto(true);
+} catch (error) {
+  console.error("❌ Error al enviar el pedido al backend:", error);
+  setEstado("❌ No se pudo contactar con el servidor.");
+}
+
 
   const manejarAgregarAlCarrito = () => {
     if (!archivo || !tipoPapel || !totalPaginas || !precioSinDescuento) {
