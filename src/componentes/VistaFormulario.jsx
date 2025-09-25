@@ -121,7 +121,7 @@ const VistaFormulario = ({ agregarAlCarrito }) => {
 
     // ✅ Enviar pedido al backend
     try {
-      const { mensaje, pedido: pedidoBackend } = await fetch('backendpedidos-production.up.railway.app', {
+      const { mensaje, pedido: pedidoBackend } = await fetch('https://backendpedidos-production.up.railway.app/api/pedidos', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
