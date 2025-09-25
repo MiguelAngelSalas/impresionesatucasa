@@ -120,17 +120,32 @@ const VistaFormulario = ({ agregarAlCarrito }) => {
     }
 
     // ✅ Enviar pedido al backend
-    const { mensaje, pedido } = await subirArchivo({
-      archivoUrl: urlCloudinary,
-      tipoPapel,
-      nombreCliente,
-      telefonoCliente: telefonoNormalizado,
-      paginas: totalPaginas,
-    });
+    try {
+      const { mensaje, pedido: pedidoBackend } = await fetch('http://localhost:3001/api/pedidos', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          cliente: nombreCliente,
+          items: [{
+            archivoUrl: urlCloudinary,
+            tipoPapel,
+            paginas: totalPaginas,
+            precio: precioSinDescuento,
+          }],
+          total: precioProyectadoConDescuento,
+          fecha: new Date().toISOString(),
+        }),
+      }).then((res) => res.json());
 
-    setEstado(mensaje);
-    if (pedido?.paginas) setTotalPaginas(pedido.paginas);
-    setMostrarMensajeContacto(true);
+      setEstado(mensaje);
+      setMostrarMensajeContacto(true);
+
+    } catch (error) {
+      console.error("❌ Error al enviar el pedido al backend:", error);
+      setEstado("❌ Error al procesar el pedido.");
+    }
   };
 
   const manejarAgregarAlCarrito = () => {
