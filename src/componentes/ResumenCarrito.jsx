@@ -61,7 +61,7 @@ const ResumenCarrito = ({
         }
       });
 
-      const res = await fetch("http://localhost:3001/api/pedidos", {
+      const res = await fetch("https://backendpedidos-production.up.railway.app/api/pedidos", {
         method: "POST",
         body: formData,
       });
