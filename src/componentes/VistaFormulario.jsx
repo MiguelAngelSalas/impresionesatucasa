@@ -1,6 +1,8 @@
+// VistaFormulario.jsx
 import React, { useState, useEffect } from "react";
-import * as pdfjsLib from "pdfjs-dist";
-import pdfjsWorker from "pdfjs-dist/build/pdf.worker?url";
+import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf";
+import workerUrl from "pdfjs-dist/legacy/build/pdf.worker?url";
+pdfjsLib.GlobalWorkerOptions.workerSrc = workerUrl;
 
 import CargadorArchivo from "./CargadorArchivo";
 import DatosCliente from "./DatosCliente";
@@ -11,11 +13,16 @@ import ListaPreciosPapel from "./ListaPreciosPapel";
 
 import { preciosPorPapel } from "./preciosPorPapel";
 import { calcularDescuento } from "../utilidades/calcularDescuento";
-import { subirArchivo } from "../servicios/api";
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
+const API_BASE = "http://localhost:3001"; // ⚡ Cambiar por la URL de producción
 
-const VistaFormulario = ({ agregarAlCarrito }) => {
+const VistaFormulario = ({
+  nombreCliente,
+  setNombreCliente,
+  telefonoCliente,
+  setTelefonoCliente,
+  agregarAlCarrito,
+}) => {
   useEffect(() => {
     if (
       window.location.hostname !== "localhost" &&
@@ -27,8 +34,6 @@ const VistaFormulario = ({ agregarAlCarrito }) => {
 
   const [archivo, setArchivo] = useState(null);
   const [tipoPapel, setTipoPapel] = useState("");
-  const [nombreCliente, setNombreCliente] = useState("");
-  const [telefonoCliente, setTelefonoCliente] = useState("");
   const [estado, setEstado] = useState("");
   const [totalPaginas, setTotalPaginas] = useState(null);
   const [mostrarMensajeContacto, setMostrarMensajeContacto] = useState(false);
@@ -41,8 +46,9 @@ const VistaFormulario = ({ agregarAlCarrito }) => {
     ? Math.round(precioSinDescuento * (1 - descuento))
     : null;
 
+  // Contar páginas PDF
   const manejarCambioArchivo = async (e) => {
-    const archivoSeleccionado = e.target.files[0];
+    const archivoSeleccionado = e.target.files?.[0];
     if (!archivoSeleccionado) return;
 
     if (archivoSeleccionado.type !== "application/pdf") {
@@ -66,9 +72,9 @@ const VistaFormulario = ({ agregarAlCarrito }) => {
         const pdf = await pdfjsLib.getDocument(typedArray).promise;
         setTotalPaginas(pdf.numPages);
         setEstado(`✅ Archivo listo. Total páginas: ${pdf.numPages}`);
+        setArchivo(archivoSeleccionado);
       };
       reader.readAsArrayBuffer(archivoSeleccionado);
-      setArchivo(archivoSeleccionado);
     } catch (error) {
       console.error(error);
       setEstado("❌ Error al leer el archivo PDF.");
@@ -77,62 +83,7 @@ const VistaFormulario = ({ agregarAlCarrito }) => {
     }
   };
 
-  const subirACloudinary = async (archivo) => {
-    const url = "https://api.cloudinary.com/v1_1/<tu-cloud-name>/upload";
-    const preset = "<tu-upload-preset>"; // creado en Cloudinary
-
-    const formData = new FormData();
-    formData.append("file", archivo);
-    formData.append("upload_preset", preset);
-
-    try {
-      const res = await fetch(url, {
-        method: "POST",
-        body: formData,
-      });
-      const data = await res.json();
-      return data.secure_url;
-    } catch (error) {
-      console.error("❌ Error al subir a Cloudinary:", error);
-      return null;
-    }
-  };
-
-  const manejarEnvio = async () => {
-    const telefonoNormalizado = telefonoCliente.trim().replace(/\s+/g, "");
-
-    if (!archivo || !tipoPapel || !telefonoNormalizado) {
-      setEstado("⚠️ Faltan datos: archivo, tipo de papel y teléfono.");
-      return;
-    }
-
-    const extension = archivo.name.split(".").pop();
-    const nuevoNombre = `${nombreCliente}_${telefonoNormalizado}_${totalPaginas}.${extension}`;
-    const archivoRenombrado = new File([archivo], nuevoNombre, {
-      type: archivo.type,
-    });
-
-    // ✅ Subir a Cloudinary
-    const urlCloudinary = await subirACloudinary(archivoRenombrado);
-    if (!urlCloudinary) {
-      setEstado("❌ No se pudo subir el archivo a Cloudinary.");
-      return;
-    }
-
-    // ✅ Enviar pedido al backend
-    const { mensaje, pedido } = await subirArchivo({
-      archivoUrl: urlCloudinary,
-      tipoPapel,
-      nombreCliente,
-      telefonoCliente: telefonoNormalizado,
-      paginas: totalPaginas,
-    });
-
-    setEstado(mensaje);
-    if (pedido?.paginas) setTotalPaginas(pedido.paginas);
-    setMostrarMensajeContacto(true);
-  };
-
+  // Agregar al carrito
   const manejarAgregarAlCarrito = () => {
     if (!archivo || !tipoPapel || !totalPaginas || !precioSinDescuento) {
       setEstado("⚠️ Faltan datos para agregar al carrito.");
@@ -146,15 +97,68 @@ const VistaFormulario = ({ agregarAlCarrito }) => {
       price: precioSinDescuento,
       detalles: {
         tipo: "impresion",
-        archivo: archivo.name,
+        archivo: archivo, // ✅ mantener el File original
         paginas: totalPaginas,
         papel: tipoPapel,
       },
     };
 
-    console.log("📦 Producto listo para carrito:", producto);
     agregarAlCarrito(producto);
     setEstado("🛒 Agregado al carrito correctamente.");
+  };
+
+  // Enviar pedido al backend
+  const manejarEnvio = async () => {
+    if (!nombreCliente || !telefonoCliente || carrito.length === 0) {
+      setEstado("⚠️ Faltan datos: cliente, teléfono o carrito vacío.");
+      return;
+    }
+
+    const telefonoNormalizado = telefonoCliente.trim().replace(/\s+/g, "_");
+
+    const formData = new FormData();
+
+    carrito.forEach((producto) => {
+      const archivoOriginal = producto.detalles.archivo;
+      formData.append("archivos", archivoOriginal);
+      formData.append("tiposPapel[]", producto.detalles.papel);
+    });
+
+    // Agrega otros campos al formData
+    formData.append("cliente", nombreCliente);
+    formData.append("telefono", telefonoNormalizado);
+
+    setEstado("⏳ Enviando pedido...");
+
+    try {
+      const response = await fetch(`${API_BASE}/api/pedidos`, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("❌ Error en la respuesta del backend:", errorText);
+        setEstado("❌ Error al procesar el pedido. Revisá la consola.");
+        return;
+      }
+
+      const data = await response.json();
+      console.log("✅ Pedido enviado:", data);
+      setEstado(data.mensaje || "✅ Pedido enviado correctamente.");
+      setMostrarMensajeContacto(true);
+
+      // Limpiar formulario y carrito
+      setArchivo(null);
+      setTipoPapel("");
+      setTotalPaginas(null);
+      setNombreCliente("");
+      setTelefonoCliente("");
+      vaciarCarrito();
+    } catch (error) {
+      console.error("❌ Error al enviar el pedido al backend:", error);
+      setEstado("❌ No se pudo contactar con el servidor.");
+    }
   };
 
   return (
@@ -202,7 +206,7 @@ const VistaFormulario = ({ agregarAlCarrito }) => {
           </div>
         </div>
 
-        <div className="w-full md:w-72 flex flex-col items-center gap-4">
+        <div className="w-full md:w-72 flex flex-col gap-4">
           <ListaPreciosPapel />
         </div>
       </div>

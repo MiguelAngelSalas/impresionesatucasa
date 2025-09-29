@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 const formatoPrecio = (valor) =>
   valor.toLocaleString("es-AR", { style: "currency", currency: "ARS" });
@@ -15,6 +15,8 @@ const calcularPrecioImpresion = (item) => {
 
 const ResumenCarrito = ({
   carrito,
+  nombreCliente,
+  telefonoCliente,
   removeFromCart,
   vaciarCarrito,
   totalPaginas,
@@ -24,38 +26,58 @@ const ResumenCarrito = ({
   totalResmas,
   totalFinal,
 }) => {
+  const [pedidoEnviado, setPedidoEnviado] = useState(false);
+
   useEffect(() => {
     console.log("🛒 Carrito recibido en ResumenCarrito:", carrito);
   }, [carrito]);
 
   const manejarEnviarPedido = async () => {
-    const pedido = {
-      cliente: {
-        nombre: "Miguel", // Podés hacerlo dinámico si querés
-        telefono: "1122334455",
-      },
-      items: carrito,
-      total: totalFinal,
-      fecha: new Date().toISOString(),
-    };
+    if (!carrito.length) {
+      alert("El carrito está vacío");
+      return;
+    }
+    if (!nombreCliente || !nombreCliente.trim()) {
+      alert("Por favor ingrese su nombre");
+      return;
+    }
+    if (!telefonoCliente || !telefonoCliente.trim()) {
+      alert("Por favor ingrese su teléfono");
+      return;
+    }
 
     try {
-      const res = await fetch(
-        "https://backendpedidos-production.up.railway.app/api/pedidos",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(pedido),
+      const formData = new FormData();
+      formData.append("cliente", nombreCliente);
+      formData.append("telefono", telefonoCliente);
+      formData.append("pedido", JSON.stringify({ items: carrito }));
+
+      carrito.forEach((item) => {
+        if (
+          item.detalles?.tipo === "impresion" &&
+          item.detalles.archivo instanceof File
+        ) {
+          formData.append("files", item.detalles.archivo);
         }
-      );
+      });
+
+      const res = await fetch("http://localhost:3001/api/pedidos", {
+        method: "POST",
+        body: formData,
+      });
 
       const data = await res.json();
-      console.log("✅ Pedido enviado:", data);
-      alert("Pedido enviado correctamente ✅");
-      vaciarCarrito();
-    } catch (error) {
-      console.error("❌ Error al enviar pedido:", error);
-      alert("Hubo un error al enviar el pedido.");
+      if (res.ok) {
+        setPedidoEnviado(true); // ✅ activa el mensaje
+        alert("Pedido enviado correctamente");
+        console.log("✅ Pedido enviado:", data);
+      } else {
+        alert("Error al enviar pedido: " + data.error);
+        console.error("❌ Error enviando pedido:", data);
+      }
+    } catch (err) {
+      alert("Error en el envío: " + err.message);
+      console.error("❌ Error en fetch:", err);
     }
   };
 
@@ -64,6 +86,12 @@ const ResumenCarrito = ({
       <h2 className="text-2xl font-bold text-violet-700 mb-6 text-center">
         🛒 Resumen del Carrito
       </h2>
+
+      {pedidoEnviado && (
+        <div className="mb-6 bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg text-center shadow-sm">
+          ✅ ¡Gracias por tu pedido! Será confirmado a la brevedad por WhatsApp desde <strong>impresionesATuCasa</strong>.
+        </div>
+      )}
 
       {carrito.length === 0 ? (
         <p className="text-gray-500 text-center">El carrito está vacío</p>

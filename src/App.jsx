@@ -22,6 +22,8 @@ const obtenerCarritoInicial = () => {
 
 function App() {
   const [carrito, setCarrito] = useState(obtenerCarritoInicial);
+  const [nombreCliente, setNombreCliente] = useState("");
+  const [telefonoCliente, setTelefonoCliente] = useState("");
 
   useEffect(() => {
     localStorage.setItem("carrito", JSON.stringify(carrito));
@@ -56,8 +58,10 @@ function App() {
   };
 
   // ✅ Separar productos por tipo
-  const impresiones = carrito.filter(item => item.detalles?.tipo === "impresion");
-  const resmas = carrito.filter(item => item.detalles?.tipo === "resma");
+  const impresiones = carrito.filter(
+    (item) => item.detalles?.tipo === "impresion"
+  );
+  const resmas = carrito.filter((item) => item.detalles?.tipo === "resma");
 
   // ✅ Calcular totales por tipo
   const totalPaginas = impresiones.reduce(
@@ -72,7 +76,9 @@ function App() {
     0
   );
 
-  const totalImpresionesConDescuento = Math.round(totalImpresionesSinDescuento * (1 - descuento));
+  const totalImpresionesConDescuento = Math.round(
+    totalImpresionesSinDescuento * (1 - descuento)
+  );
 
   const totalResmas = resmas.reduce((acc, item) => {
     const cantidad = item.cantidad || 1;
@@ -81,7 +87,7 @@ function App() {
   }, 0);
 
   const totalFinal = totalImpresionesConDescuento + totalResmas;
-
+  
   return (
     <>
       <Header cartCount={carrito.length} />
@@ -94,13 +100,23 @@ function App() {
           />
           <Route
             path="/upload"
-            element={<VistaFormulario agregarAlCarrito={agregarAlCarrito} />}
+            element={
+              <VistaFormulario
+                agregarAlCarrito={agregarAlCarrito}
+                nombreCliente={nombreCliente}
+                setNombreCliente={setNombreCliente}
+                telefonoCliente={telefonoCliente}
+                setTelefonoCliente={setTelefonoCliente}
+              />
+            }
           />
           <Route
             path="/carrito"
             element={
               <ResumenCarrito
                 carrito={carrito}
+                nombreCliente={nombreCliente}
+                telefonoCliente={telefonoCliente}
                 removeFromCart={eliminarDelCarrito}
                 vaciarCarrito={vaciarCarrito}
                 totalPaginas={totalPaginas}
