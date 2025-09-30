@@ -22,6 +22,8 @@ const VistaFormulario = ({
   telefonoCliente,
   setTelefonoCliente,
   agregarAlCarrito,
+  carrito,
+  vaciarCarrito,
 }) => {
   useEffect(() => {
     if (
