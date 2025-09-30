@@ -107,6 +107,8 @@ function App() {
                 setNombreCliente={setNombreCliente}
                 telefonoCliente={telefonoCliente}
                 setTelefonoCliente={setTelefonoCliente}
+                carrito={carrito}
+                vaciarCarrito={vaciarCarrito}
               />
             }
           />
