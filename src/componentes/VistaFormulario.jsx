@@ -126,9 +126,9 @@ const VistaFormulario = ({
       formData.append("tiposPapel[]", producto.detalles.papel);
     });
 
-    // Agrega otros campos al formData
     formData.append("cliente", nombreCliente);
     formData.append("telefono", telefonoNormalizado);
+    formData.append("pedido", JSON.stringify({ items: carrito }));
 
     setEstado("⏳ Enviando pedido...");
 
