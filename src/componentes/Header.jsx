@@ -16,9 +16,9 @@ const Header = ({ cartCount }) => {
           <Link to="/upload" className="text-sm font-medium text-violet-700 hover:text-violet-900 transition">
             Impresiones
           </Link>
-          <Link to="/resmas" className="text-sm font-medium text-violet-700 hover:text-violet-900 transition">
+          {/*<Link to="/resmas" className="text-sm font-medium text-violet-700 hover:text-violet-900 transition">
             Resmas
-          </Link>
+          </Link>*/}
           <Link to="/carrito" className="relative text-sm font-medium text-violet-700 hover:text-violet-900 transition">
             🛒 Carrito
             {cartCount > 0 && (
