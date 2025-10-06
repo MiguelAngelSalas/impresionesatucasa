@@ -6,7 +6,7 @@ const resmas = [
     nombre: "Mate fino 110 Grs",
     descripcion: "Ideal para impresiones suaves y económicas.",
     imagen: "./global-matefino-110grA4.jpg",
-    precio: null, // ← completás vos
+    precio: 16654.99, // ← completás vos
   },
   {
     id: "mateGrueso",
@@ -20,49 +20,49 @@ const resmas = [
     nombre: "Mate bifaz 200 Grs",
     descripcion: "Impresión doble faz sin transparencias.",
     imagen: "arjet-mateBifaz-200grA4.webp",
-    precio: null,
+    precio: 18354.99,
   },
   {
     id: "fotoFino",
     nombre: "Foto fino 140 Grs",
     descripcion: "Acabado brillante, ideal para flyers y fotos.",
     imagen: "global-fotoFino-140grA4.jpg",
-    precio: null,
+    precio: 5059.99,
   },
   {
     id: "fotoGrueso",
     nombre: "Foto grueso 200 Grs",
     descripcion: "Alta calidad para impresiones premium.",
     imagen: "arjet-fotoGrueso-200grA4.webp",
-    precio: 3000,
+    precio: 5099.99,
   },
   {
     id: "fotoPremium",
     nombre: "Foto premium 250 Grs",
     descripcion: "Acabado superior para fotos de alta definición.",
     imagen: "global-fotoPremium-260grA4.jpg",
-    precio: null,
+    precio: 34819.99,
   },
   {
     id: "autoadhesivo",
     nombre: "Autoadhesivo 150 Grs",
     descripcion: "Pegatina estándar para etiquetas y promociones.",
     imagen: "global-autadhesivo-135grA4.webp",
-    precio: null,
+    precio: 6579.99,
   },
   {
     id: "autoadhesivoPremium",
     nombre: "Autoadhesivo premium 200 Grs",
     descripcion: "Pegatina de alta calidad con mejor adherencia.",
     imagen: "arjet-autoadhesivoPremium-115grA4.webp",
-    precio: null,
+    precio: 9114.99,
   },
   {
     id: "autoadhesivoResistente",
     nombre: "Autoadhesivo resistente al agua 220 Grs",
     descripcion: "Ideal para etiquetas duraderas y resistentes a la humedad.",
     imagen: "arjet-filmiloBlancoResistente-88micronesA4.webp",
-    precio: null,
+    precio: 23199.99,
   },
 ];
 
@@ -114,3 +114,4 @@ const Resmas = ({ agregarAlCarrito }) => {
 };
 
 export default Resmas;
+
