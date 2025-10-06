@@ -13,7 +13,7 @@ const resmas = [
     nombre: "Mate grueso 210 Grs",
     descripcion: "Perfecto para presentaciones con cuerpo y textura.",
     imagen: "global-mateGruesoSimple-210grA4.webp",
-    precio: null,
+    precio: 23879.99,
   },
   {
     id: "mateBifaz",
@@ -114,4 +114,5 @@ const Resmas = ({ agregarAlCarrito }) => {
 };
 
 export default Resmas;
+
 
