@@ -2,18 +2,14 @@ const Consultas = () => {
   const preguntas = [
     {
       pregunta: "¿Qué tipo de archivo puedo subir?",
-      respuesta: "Aceptamos solo PDF. Pronto habilitaremos mas extensiones como fotos separadas."
+      respuesta: "De momento solo se admiten archivos PDF. Próximamente podrás subir otros formatos e imágenes individuales."
     },
     {
       pregunta: "¿Los colores salen igual que en pantalla?",
       respuesta: "Los colores pueden variar mínimamente respecto a lo que ves en pantalla, ya que cada dispositivo y tipo de papel tiene sus propias características. Usamos materiales de calidad para lograr la mejor fidelidad posible."
     },
     {
-      pregunta: "¿Cuánto tarda el envío?",
-      respuesta: "Organizamos las entregas según el horario en que se realiza el pedido. Si hacés tu pedido antes de las 12:00 hs, entra en la ruta de reparto del mismo día (por la tarde). Los pedidos realizados hasta las 17:00 hs se preparan para la entrega al día siguiente. Este sistema nos permite mantener un ritmo de trabajo ágil y ordenado, asegurando que cada impresión llegue en tiempo y forma."
-    },
-    {
-      pregunta: "¿Puedo pagar directamente por MercadoPago?",
+      pregunta: "¿Puedo pagar por MercadoPago?",
       respuesta: "Sí. Pronto habilitaremos el carrito con pago automático. Por ahora, coordinamos por WhatsApp."
     },
     {
