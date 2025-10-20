@@ -136,6 +136,7 @@ const VistaFormulario = ({
       const response = await fetch(`${API_BASE}/api/pedidos`, {
         method: "POST",
         body: formData,
+        credentials: "include",
       });
 
       if (!response.ok) {
