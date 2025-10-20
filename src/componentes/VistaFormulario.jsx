@@ -14,7 +14,7 @@ import ListaPreciosPapel from "./ListaPreciosPapel";
 import { preciosPorPapel } from "./preciosPorPapel";
 import { calcularDescuento } from "../utilidades/calcularDescuento";
 
-const API_BASE = "https://backendpedidos-production.up.railway.app"; // ⚡ Cambiar por la URL de producción
+const API_BASE = "site--backendpedidos--5lz4hq4qwsk5.code.run"; // ⚡ Cambiar por la URL de producción
 
 const VistaFormulario = ({
   nombreCliente,
