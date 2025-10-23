@@ -14,7 +14,7 @@ import ListaPreciosPapel from "./ListaPreciosPapel";
 import { preciosPorPapel } from "./preciosPorPapel";
 import { calcularDescuento } from "../utilidades/calcularDescuento";
 
-const API_BASE = "api.impresionesatucasa.com.ar"; // ⚡ Cambiar por la URL de producción
+const API_BASE = "https://api.impresionesatucasa.com.ar";
 
 const VistaFormulario = ({
   nombreCliente,
