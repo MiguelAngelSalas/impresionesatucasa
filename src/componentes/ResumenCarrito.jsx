@@ -61,7 +61,7 @@ const ResumenCarrito = ({
         }
       });
 
-      const res = await fetch("https://backendpedidos-production.up.railway.app/api/pedidos", {
+        const res = await fetch("https://api.impresionesatucasa.com.ar/api/pedidos", {
         method: "POST",
         body: formData,
       });
