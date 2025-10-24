@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:3000/api/pedidos";
+const API_URL = "import.meta.env.VITE_API_URL;";
 
 export const subirArchivo = async ({ archivo, tipoPapel, nombreCliente, telefonoCliente, paginas }) => {
   const formData = new FormData();
