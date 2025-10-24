@@ -1,4 +1,4 @@
-const API_URL = "api.impresionesatucasa.com.ar"
+const API_URL = "https://api.impresionesatucasa.com.ar"
 
 
 export const subirArchivo = async ({ archivo, tipoPapel, nombreCliente, telefonoCliente, paginas }) => {
