@@ -1,4 +1,5 @@
 const API_URL = import.meta.env.VITE_API_URL;
+console.log("🌐 API_URL:", import.meta.env.VITE_API_URL);
 
 export const subirArchivo = async ({ archivo, tipoPapel, nombreCliente, telefonoCliente, paginas }) => {
   const formData = new FormData();
