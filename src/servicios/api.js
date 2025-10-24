@@ -1,5 +1,5 @@
-const API_URL = import.meta.env.VITE_API_URL;
-console.log("🌐 API_URL:", import.meta.env.VITE_API_URL);
+const API_URL = "https://site--backendpedidos--5lz4hq4qwsk5.code.run/api"
+
 
 export const subirArchivo = async ({ archivo, tipoPapel, nombreCliente, telefonoCliente, paginas }) => {
   const formData = new FormData();
