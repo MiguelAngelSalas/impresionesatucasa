@@ -57,11 +57,11 @@ const ResumenCarrito = ({
           item.detalles?.tipo === "impresion" &&
           item.detalles.archivo instanceof File
         ) {
-          formData.append("files", item.detalles.archivo);
+          formData.append("archivos", item.detalles.archivo);
         }
       });
 
-        const res = await fetch("https://api.impresionesatucasa.com.ar/api/pedidos", {
+        const res = await fetch(`${API_URL}/pedidos`, {
         method: "POST",
         body: formData,
       });
