@@ -1,4 +1,14 @@
-const API_URL = "https://api.impresionesatucasa.com.ar"
+// Base URL de la API tomada de variables de entorno de Vite (Vercel)
+const envApiUrl = (typeof import !== "undefined" && import.meta && import.meta.env)
+  ? import.meta.env.VITE_API_URL
+  : undefined;
+
+const FALLBACK_API_URL = "https://api.impresionesatucasa.com.ar";
+
+// Exportamos para ser reutilizado en toda la app
+export const API_URL = (typeof envApiUrl === "string" && envApiUrl.trim() !== ""
+  ? envApiUrl
+  : FALLBACK_API_URL).replace(/\/+$/, "");
 
 
 export const subirArchivo = async ({ archivo, tipoPapel, nombreCliente, telefonoCliente, paginas }) => {
