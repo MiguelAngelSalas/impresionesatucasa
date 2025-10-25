@@ -1,5 +1,4 @@
-const API_URL = "https://api.impresionesatucasa.com.ar"
-
+export const API_URL = (import.meta.env?.VITE_API_URL?.trim() || "https://api.impresionesatucasa.com.ar").replace(/\/+$/, "");
 
 export const subirArchivo = async ({ archivo, tipoPapel, nombreCliente, telefonoCliente, paginas }) => {
   const formData = new FormData();
@@ -30,3 +29,4 @@ export const subirArchivo = async ({ archivo, tipoPapel, nombreCliente, telefono
     return { mensaje: "Error de conexión con el servidor." };
   }
 };
+
