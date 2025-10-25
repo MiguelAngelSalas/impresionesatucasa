@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { API_URL } from "../servicios/api";
 
 const formatoPrecio = (valor) =>
   valor.toLocaleString("es-AR", { style: "currency", currency: "ARS" });

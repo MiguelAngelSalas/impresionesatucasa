@@ -13,8 +13,7 @@ import ListaPreciosPapel from "./ListaPreciosPapel";
 
 import { preciosPorPapel } from "./preciosPorPapel";
 import { calcularDescuento } from "../utilidades/calcularDescuento";
-
-const API_BASE = "https://api.impresionesatucasa.com.ar";
+import { API_URL } from "../servicios/api";
 
 const VistaFormulario = ({
   nombreCliente,
@@ -133,7 +132,7 @@ const VistaFormulario = ({
     setEstado("⏳ Enviando pedido...");
 
     try {
-      const response = await fetch(`${API_BASE}/api/pedidos`, {
+      const response = await fetch(`${API_URL}/api/pedidos`, {
         method: "POST",
         body: formData,
         credentials: "include",
