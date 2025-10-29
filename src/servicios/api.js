@@ -1,5 +1,4 @@
-export const API_URL = (import.meta.env?.VITE_API_URL?.trim() || "https://api.impresionesatucasa.com.ar").replace(/\/+$/, "");
-
+export const API_URL = "http://api.impresionesatucasa.com.ar";
 export const subirArchivo = async ({ archivo, tipoPapel, nombreCliente, telefonoCliente, paginas }) => {
   const formData = new FormData();
   formData.append("file", archivo, archivo.name); // 👈 nombre explícito
@@ -9,7 +8,7 @@ export const subirArchivo = async ({ archivo, tipoPapel, nombreCliente, telefono
   formData.append("paginas", paginas);
 
   try {
-    const respuesta = await fetch(`${API_URL}/upload`, {
+    const respuesta = await fetch(`${API_URL}/pedidos`, {
       method: "POST",
       body: formData,
     });
