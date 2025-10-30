@@ -19,4 +19,5 @@ const SelectorPapel = ({ value, onChange }) => {
   );
 };
 
+
 export default SelectorPapel;
