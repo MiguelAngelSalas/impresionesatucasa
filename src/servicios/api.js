@@ -1,4 +1,4 @@
-export const API_URL = "http://api.impresionesatucasa.com.ar";
+export const API_URL = "https://api.impresionesatucasa.com.ar";
 export const subirArchivo = async ({ archivo, tipoPapel, nombreCliente, telefonoCliente, paginas }) => {
   const formData = new FormData();
   formData.append("file", archivo, archivo.name); // 👈 nombre explícito
