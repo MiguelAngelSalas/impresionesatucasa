@@ -1,4 +1,5 @@
 export const preciosPorPapel = {
+  comunByN: 200,
   fotoFino: 1065,
   fotoGrueso: 1140,
   fotoPremium: 1635,

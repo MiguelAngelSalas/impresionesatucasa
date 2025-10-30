@@ -1,6 +1,7 @@
 import React from "react";
 
 const precios = [
+  { id: "comunByN", nombre: "Papel obra 80gr blanco y negro", precio: 200 },
   { id: "fotoFino", nombre: "Foto fino 140 Grs", precio: 1065 },
   { id: "fotoGrueso", nombre: "Foto Grueso 200 Grs", precio: 1140 },
   { id: "fotoPremium", nombre: "Foto Premium 260 Grs", precio: 1635 },
