@@ -7,7 +7,7 @@ import Inicio from "./componentes/Inicio";
 import Resmas from "./componentes/Resmas";
 import VistaFormulario from "./componentes/VistaFormulario";
 import ResumenCarrito from "./componentes/ResumenCarrito";
-
+import Footer from "./componentes/Footer"
 import { calcularDescuento } from "./utilidades/calcularDescuento.jsx";
 
 const obtenerCarritoInicial = () => {
@@ -132,6 +132,7 @@ function App() {
           />
         </Routes>
       </main>
+      <Footer/>
     </>
   );
 }
