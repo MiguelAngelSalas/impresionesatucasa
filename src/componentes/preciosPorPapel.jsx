@@ -7,4 +7,5 @@ export const preciosPorPapel = {
   mateGrueso: 1155,
   mateGruesoBiFaz: 1275,
   styckers: 1830,
+  tatuajesTemporales: 6000,
 };

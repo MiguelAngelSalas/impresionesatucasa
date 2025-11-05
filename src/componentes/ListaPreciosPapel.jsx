@@ -9,6 +9,7 @@ const precios = [
   { id: "mateGrueso", nombre: "Mate grueso 210 Grs", precio: 1155 },
   { id: "mateGruesoBiFaz", nombre: "Mate grueso bifaz 200 Grs", precio: 1275 },
   { id: "styckers", nombre: "Autoadhesivo resistente al agua (Styckers)", precio: 1830 },
+  { id: "tatuajesTemporales", nombre: "Plancha de tatuajes temporales", precio: 6000}
 ];
 
 

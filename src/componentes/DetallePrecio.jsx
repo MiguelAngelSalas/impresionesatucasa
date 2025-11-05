@@ -10,6 +10,7 @@ const nombresPapel = {
   mateGrueso: "Mate grueso 210 Grs",
   mateGruesoBiFaz: "Mate grueso bifaz 200 Grs",
   styckers: "Autoadhesivo resistente al agua (Stickers)",
+  tatuajesTemporales: "Tatuajes temporales",
 };
 
 const formatearTipoPapel = (tipo) => {
