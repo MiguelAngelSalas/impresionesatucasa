@@ -26,7 +26,7 @@ const Inicio = () => {
           Subís tu archivo, elegís el papel, y nosotros lo imprimimos como vos querés.
         </p>
         <p className="text-base sm:text-lg text-gray-700 mb-4">
-          Lo recibís en tu casa, sin moverte. El precio ya incluye el envío.
+          Arreglamos el envio por WhatsApp y Lo recibís en tu casa, sin moverte.
         </p>
         <p className="text-base sm:text-lg text-gray-700">
           Rápido, confiable y hecho a tu medida.
@@ -72,4 +72,5 @@ const Inicio = () => {
 };
 
 export default Inicio;
+
 
