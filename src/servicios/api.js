@@ -1,4 +1,4 @@
-export const API_URL = "https://backendpedidos.onrender.com";
+export const API_URL = "https://backendpedidos.onrender.com/api";
 export const subirArchivo = async ({ archivo, tipoPapel, nombreCliente, telefonoCliente, paginas }) => {
   const formData = new FormData();
   formData.append("file", archivo, archivo.name); // 👈 nombre explícito
