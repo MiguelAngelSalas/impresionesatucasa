@@ -7,6 +7,7 @@ export const preciosPorPapel = {
   mateGrueso: 1455,
   mateGruesoBiFaz: 1775,
   autoAdhesivoComun: 1495,
+  autoAdhesivoPremium: 1695,
   styckers: 2130,
   tatuajesTemporales: 6000,
 };
