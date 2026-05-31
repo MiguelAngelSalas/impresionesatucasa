@@ -17,6 +17,8 @@ const SelectorPapel = ({ value, onChange }) => {
       <option value="mateGruesoBiFaz">Mate grueso bifaz 200 Grs</option>
       <option value="styckers">Autoadhesivo resistente al agua (Styckers)</option>
       <option value="tatuajesTemporales">Tatuajes temporales</option>
+      <option value="adhesivoComun">Autoadhesivo Comun 135 gr</option>
+      <option value="adhesivoComunPremium">Autoadhesivo Premium 115 gr</option>
     </select>
   );
 };
