@@ -11,7 +11,7 @@ import FormularioEnvio from "./FormularioEnvio";
 import MensajeContacto from "./MensajeContacto";
 import ListaPreciosPapel from "./ListaPreciosPapel";
 
-import { preciosPorPapel } from "./preciosPorPapel";
+import  preciosPorPapel  from "./preciosPorPapel";
 import { calcularDescuento } from "../utilidades/calcularDescuento";
 
 const API_BASE = "https://api.impresionesatucasa.com.ar";
@@ -40,7 +40,8 @@ const VistaFormulario = ({
   const [totalPaginas, setTotalPaginas] = useState(null);
   const [mostrarMensajeContacto, setMostrarMensajeContacto] = useState(false);
 
-  const precioUnitario = preciosPorPapel[tipoPapel] || 0;
+  const papelSelecionado = preciosPorPapel.find((p)=> p.id == tipoPapel)
+  const precioUnitario = papelSelecionado ? papelSelecionado.precio:  0;
   const descuento = calcularDescuento(totalPaginas || 0);
   const precioSinDescuento =
     totalPaginas && tipoPapel ? totalPaginas * precioUnitario : null;

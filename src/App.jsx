@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import "./App.css";
-
+import  preciosPorPapel  from "./componentes/preciosPorPapel.jsx";
 import Header from "./componentes/Header";
 import Inicio from "./componentes/Inicio";
 import Resmas from "./componentes/Resmas";
@@ -12,6 +12,7 @@ import { calcularDescuento } from "./utilidades/calcularDescuento.jsx";
 
 const obtenerCarritoInicial = () => {
   try {
+    console.log(preciosPorPapel)
     const guardado = localStorage.getItem("carrito");
     const parsed = JSON.parse(guardado);
     return Array.isArray(parsed) ? parsed : [];

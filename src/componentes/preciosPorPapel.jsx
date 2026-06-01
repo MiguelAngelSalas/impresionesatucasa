@@ -1,13 +1,14 @@
-export const preciosPorPapel = {
-  comunByN: 250,
-  fotoFino: 1265,
-  fotoGrueso: 1540,
-  fotoPremium: 1935,
-  mateFino: 1295,
-  mateGrueso: 1455,
-  mateGruesoBiFaz: 1775,
-  autoAdhesivoComun: 1495,
-  autoAdhesivoPremium: 1695,
-  styckers: 2130,
-  tatuajesTemporales: 6000,
-};
+const preciosPorPapel = [
+  { id: "comunByN", nombre: "Papel obra 80gr blanco y negro", precio: 250 },
+  { id: "fotoFino", nombre: "Foto fino 140 Grs", precio: 1265 },
+  { id: "fotoGrueso", nombre: "Foto Grueso 200 Grs", precio: 1540 },
+  { id: "fotoPremium", nombre: "Foto Premium 260 Grs", precio: 1935 },
+  { id: "mateFino", nombre: "Mate fino 110 Grs", precio: 1295 },
+  { id: "mateGrueso", nombre: "Mate grueso 210 Grs", precio: 1455 },
+  { id: "mateGruesoBiFaz", nombre: "Mate grueso bifaz 200 Grs", precio: 1775 },
+  { id: "autoAdhesivoComun", nombre: "Autoadhesivo común", precio: 1495 },
+  { id: "autoAdhesivoPremium", nombre: "Autoadhesivo Premium", precio: 1695 },
+  { id: "styckers", nombre: "Autoadhesivo resistente al agua (Stickers)", precio: 2130 },
+  { id: "tatuajesTemporales", nombre: "Plancha de tatuajes temporales", precio: 6000 },
+];
+export default preciosPorPapel;

@@ -13,7 +13,6 @@ const nombresPapel = {
   tatuajesTemporales: "Tatuajes temporales",
   adhesivoComun: "Autoadhesivo comun 135 gr",
   adhesivoPremium: "Autoadhesivo premium 115 gr",
-  
 };
 
 const formatearTipoPapel = (tipo) => {
