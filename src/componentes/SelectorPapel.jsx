@@ -18,7 +18,7 @@ const SelectorPapel = ({ value, onChange }) => {
       <option value="styckers">Autoadhesivo resistente al agua (Styckers)</option>
       <option value="tatuajesTemporales">Tatuajes temporales</option>
       <option value="adhesivoComun">Autoadhesivo Comun 135 gr</option>
-      <option value="adhesivoComunPremium">Autoadhesivo Premium 115 gr</option>
+      <option value="adhesivoPremium">Autoadhesivo Premium 115 gr</option>
     </select>
   );
 };
