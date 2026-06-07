@@ -5,9 +5,10 @@ const Header = ({ cartCount }) => {
   return (
     <header className="bg-violet-100 border-b border-violet-300 shadow-sm">
       <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-        <h1 className="text-xl font-bold text-violet-700 tracking-wide">
-          impresiones A Tu Casa
-        </h1>
+        {/* Cambiamos h1 por div para liberar la etiqueta reina para el SEO de la Home */}
+        <Link to="/" className="text-xl font-bold text-violet-700 tracking-wide hover:text-violet-900 transition">
+          Impresiones A Tu Casa
+        </Link>
 
         <nav className="flex space-x-4 items-center">
           <Link to="/" className="text-sm font-medium text-violet-700 hover:text-violet-900 transition">
@@ -16,9 +17,6 @@ const Header = ({ cartCount }) => {
           <Link to="/upload" className="text-sm font-medium text-violet-700 hover:text-violet-900 transition">
             Impresiones
           </Link>
-          {/*<Link to="/resmas" className="text-sm font-medium text-violet-700 hover:text-violet-900 transition">
-            Resmas
-          </Link>*/}
           <Link to="/carrito" className="relative text-sm font-medium text-violet-700 hover:text-violet-900 transition">
             🛒 Carrito
             {cartCount > 0 && (
@@ -34,4 +32,3 @@ const Header = ({ cartCount }) => {
 };
 
 export default Header;
-

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Consultas from './Consultas'; // Asegurate de que Consultas.js esté en el mismo directorio o ajustá la ruta
+import Consultas from './Consultas'; 
 
 const resmas = [
   { id: "mateFino", nombre: "Mate fino 110 Grs", descripcion: "Ideal para impresiones suaves y económicas.", imagen: "./global-matefino-110grA4.jpg" },
@@ -18,24 +18,31 @@ const Inicio = () => {
 
   return (
     <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      {/* Caja Principal - Bloque SEO Destacado */}
       <div className="bg-white border border-violet-200 rounded-xl shadow-lg p-6 sm:p-8 text-center transition-all duration-300 hover:shadow-xl mb-10">
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 text-violet-800">
-          ¿Necesitás imprimir algo? Te lo llevamos.
+        
+        {/* EL REY DEL SEO: Ahora es ultra descriptivo para todo el país */}
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 text-violet-800 tracking-tight">
+          Impresión de PDFs y Fotocopias Online con <span className="text-violet-600 block sm:inline">Envíos a todo el País</span>
         </h1>
-        <p className="text-base sm:text-lg text-gray-700 mb-4">
-          Subís tu archivo, elegís el papel, y nosotros lo imprimimos como vos querés.
+        
+        <p className="text-base sm:text-lg text-gray-700 mb-4 max-w-3xl mx-auto">
+          Subís tus archivos desde cualquier provincia, elegís el tipo de papel especial que necesitás, y nosotros nos encargamos del resto de forma rápida y económica.
         </p>
-        <p className="text-base sm:text-lg text-gray-700 mb-4">
-          Arreglamos el envio por WhatsApp y Lo recibís en tu casa, sin moverte.
+        
+        <p className="text-base sm:text-lg text-gray-700 mb-4 font-medium text-violet-700">
+          Coordinamos el envío directo a tu domicilio para que recibas tus apuntes o cuadernillos sin moverte.
         </p>
-        <p className="text-base sm:text-lg text-gray-700">
-          Rápido, confiable y hecho a tu medida.
+        
+        <p className="text-base sm:text-lg text-gray-500 italic">
+          Calidad garantizada, atención personalizada y hecho totalmente a tu medida.
         </p>
       </div>
 
+      {/* Selector de Papeles (Mantiene tu lógica intacta) */}
       <div className="overflow-x-auto">
         <h2 className="text-xl sm:text-2xl font-semibold text-violet-700 mb-4 text-center">
-          Papeles que trabajamos
+          Tipos de Papeles y Resmas con los que Trabajamos
         </h2>
         <div className="flex space-x-4 pb-4">
           {resmas.map((resma) => (
@@ -63,7 +70,7 @@ const Inicio = () => {
         </div>
       )}
 
-      {/* Preguntas frecuentes integradas */}
+      {/* Preguntas frecuentes */}
       <div className="mt-16">
         <Consultas />
       </div>
@@ -72,5 +79,3 @@ const Inicio = () => {
 };
 
 export default Inicio;
-
-
