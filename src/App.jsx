@@ -9,6 +9,7 @@ import VistaFormulario from "./componentes/VistaFormulario";
 import ResumenCarrito from "./componentes/ResumenCarrito";
 import Footer from "./componentes/Footer"
 import { calcularDescuento } from "./utilidades/calcularDescuento.jsx";
+import { Toaster } from 'react-hot-toast';
 
 const obtenerCarritoInicial = () => {
   try {
@@ -134,6 +135,7 @@ function App() {
         </Routes>
       </main>
       <Footer/>
+      <Toaster position="bottom-right" reverseOrder={false} />
     </>
   );
 }

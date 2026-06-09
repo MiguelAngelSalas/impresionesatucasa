@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { API_URL } from "../servicios/api";
+import {toast} from "react-hot-toast"
 
 const formatoPrecio = (valor) =>
   valor.toLocaleString("es-AR", { style: "currency", currency: "ARS" });
@@ -35,51 +36,70 @@ const ResumenCarrito = ({
 
   const manejarEnviarPedido = async () => {
     if (!carrito.length) {
-      alert("El carrito está vacío");
+      toast.error("El carrito está vacío 🛒");
       return;
     }
     if (!nombreCliente || !nombreCliente.trim()) {
-      alert("Por favor ingrese su nombre");
+      toast.error("Por favor ingrese su nombre 👤");
       return;
     }
     if (!telefonoCliente || !telefonoCliente.trim()) {
-      alert("Por favor ingrese su teléfono");
+      toast.error("Por favor ingrese su teléfono 📱");
       return;
     }
 
-    try {
-      const formData = new FormData();
-      formData.append("cliente", nombreCliente);
-      formData.append("telefono", telefonoCliente);
-      formData.append("pedido", JSON.stringify({ items: carrito }));
+    // 1. Preparamos el FormData antes de la promesa (es instantáneo)
+    const formData = new FormData();
+    formData.append("cliente", nombreCliente);
+    formData.append("telefono", telefonoCliente);
+    formData.append("pedido", JSON.stringify({ items: carrito }));
 
-      carrito.forEach((item) => {
-        if (
-          item.detalles?.tipo === "impresion" &&
-          item.detalles.archivo instanceof File
-        ) {
-          formData.append("archivos", item.detalles.archivo);
-        }
-      });
-
-        const res = await fetch(`${API_URL}/pedidos`, {
-        method: "POST",
-        body: formData,
-      });
-
-      const data = await res.json();
-      if (res.ok) {
-        setPedidoEnviado(true); // ✅ activa el mensaje
-        alert("Pedido enviado correctamente");
-        console.log("✅ Pedido enviado:", data);
-      } else {
-        alert("Error al enviar pedido: " + data.error);
-        console.error("❌ Error enviando pedido:", data);
+    carrito.forEach((item) => {
+      if (
+        item.detalles?.tipo === "impresion" &&
+        item.detalles.archivo instanceof File
+      ) {
+        formData.append("archivos", item.detalles.archivo);
       }
-    } catch (err) {
-      alert("Error en el envío: " + err.message);
-      console.error("❌ Error en fetch:", err);
-    }
+    });
+
+    // 2. Metemos la petición real dentro del Toast Inteligente
+    toast.promise(
+      // Esta es la promesa que va a ejecutar
+      (async () => {
+        const res = await fetch(`${API_URL}/pedidos`, {
+          method: "POST",
+          body: formData,
+        });
+
+        const data = await res.json();
+        
+        if (!res.ok) {
+          // Si el servidor responde con error (ej: 400 o 500), lanzamos un error para que vaya al "error:" del toast
+          throw new Error(data.error || "Error desconocido en el servidor");
+        }
+
+        // Si todo sale bien
+        setPedidoEnviado(true); // Activa tu cartel verde en la UI
+        vaciarCarrito();        // Podés meter acá el vaciado si querés limpiar el formulario
+        return data;            // Éxito total
+      })(),
+      // 3. Configuramos los carteles flotantes según el estado de la subida
+      {
+        loading: "Subiendo tus archivos... No cierres la página ⏳",
+        success: "¡Pedido enviado con éxito! 🚀",
+        error: (err) => `Error en el envío: ${err.message} ❌`,
+      },
+      {
+        style: {
+          minWidth: '250px',
+        },
+        success: {
+          duration: 4000,
+          icon: '🔥',
+        },
+      }
+    );
   };
 
   return (

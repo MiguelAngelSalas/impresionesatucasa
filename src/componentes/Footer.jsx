@@ -31,7 +31,7 @@ export default function Footer() {
 
         <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", marginBottom: "1.2rem" }}>
           <a
-            href="https://wa.me/5491166800053"
+            href="https://wa.me/5491123909529"
             target="_blank"
             rel="noopener noreferrer"
             style={{ textDecoration: "none", color: "inherit", fontSize: "1.05rem", marginRight: "12px" }}
