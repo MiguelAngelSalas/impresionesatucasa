@@ -9,11 +9,7 @@ import VistaFormulario from "./componentes/VistaFormulario";
 import ResumenCarrito from "./componentes/ResumenCarrito";
 import Footer from "./componentes/Footer";
 import { calcularDescuento } from "./utilidades/calcularDescuento.jsx";
-<<<<<<< HEAD
 import { Toaster } from "react-hot-toast";
-=======
-import { Toaster } from 'react-hot-toast';
->>>>>>> 55df30219cc499d9a8be6e04b3b8f357dc2fdd26
 
 const obtenerCarritoInicial = () => {
   try {
@@ -164,12 +160,8 @@ function App() {
           />
         </Routes>
       </main>
-<<<<<<< HEAD
       
       <Footer />
-=======
-      <Footer/>
->>>>>>> 55df30219cc499d9a8be6e04b3b8f357dc2fdd26
       <Toaster position="bottom-right" reverseOrder={false} />
     </>
   );
