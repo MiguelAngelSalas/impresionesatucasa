@@ -17,31 +17,31 @@ const Inicio = () => {
   const [resmaSeleccionada, setResmaSeleccionada] = useState(null);
 
   return (
-    <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 transition-colors duration-300">
       {/* Caja Principal - Bloque SEO Destacado */}
-      <div className="bg-white border border-violet-200 rounded-xl shadow-lg p-6 sm:p-8 text-center transition-all duration-300 hover:shadow-xl mb-10">
+      <div className="bg-white dark:bg-slate-800 border border-violet-200 dark:border-slate-700 rounded-xl shadow-lg dark:shadow-black/40 p-6 sm:p-8 text-center transition-all duration-300 hover:shadow-xl mb-10">
         
-        {/* EL REY DEL SEO: Ahora es ultra descriptivo para todo el país */}
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 text-violet-800 tracking-tight">
-          Impresión de PDFs y Fotocopias Online con <span className="text-violet-600 block sm:inline">Envíos a todo el País</span>
+        {/* EL REY DEL SEO */}
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 text-violet-800 dark:text-violet-400 tracking-tight transition-colors duration-300">
+          Impresión de PDFs y Fotos Online con <span className="text-violet-600 dark:text-violet-300 block sm:inline">Envíos a todo el País</span>
         </h1>
         
-        <p className="text-base sm:text-lg text-gray-700 mb-4 max-w-3xl mx-auto">
+        <p className="text-base sm:text-lg text-gray-700 dark:text-slate-300 mb-4 max-w-3xl mx-auto transition-colors duration-300">
           Subís tus archivos desde cualquier provincia, elegís el tipo de papel especial que necesitás, y nosotros nos encargamos del resto de forma rápida y económica.
         </p>
         
-        <p className="text-base sm:text-lg text-gray-700 mb-4 font-medium text-violet-700">
+        <p className="text-base sm:text-lg text-violet-700 dark:text-violet-300 mb-4 font-medium transition-colors duration-300">
           Coordinamos el envío directo a tu domicilio para que recibas tus apuntes o cuadernillos sin moverte.
         </p>
         
-        <p className="text-base sm:text-lg text-gray-500 italic">
+        <p className="text-base sm:text-lg text-gray-500 dark:text-slate-400 italic transition-colors duration-300">
           Calidad garantizada, atención personalizada y hecho totalmente a tu medida.
         </p>
       </div>
 
-      {/* Selector de Papeles (Mantiene tu lógica intacta) */}
+      {/* Selector de Papeles */}
       <div className="overflow-x-auto">
-        <h2 className="text-xl sm:text-2xl font-semibold text-violet-700 mb-4 text-center">
+        <h2 className="text-xl sm:text-2xl font-semibold text-violet-700 dark:text-violet-400 mb-4 text-center transition-colors duration-300">
           Tipos de Papeles y Resmas con los que Trabajamos
         </h2>
         <div className="flex space-x-4 pb-4">
@@ -49,29 +49,33 @@ const Inicio = () => {
             <button
               key={resma.id}
               onClick={() => setResmaSeleccionada(resma)}
-              className="min-w-[220px] bg-white border border-gray-300 rounded-lg p-4 shadow-md flex-shrink-0 transition transform hover:scale-105 text-left"
+              className="min-w-[220px] bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded-lg p-4 shadow-md flex-shrink-0 transition transform hover:scale-105 text-left focus:outline-none focus:ring-2 focus:ring-violet-400 dark:focus:ring-violet-500"
             >
-              <h3 className="text-md font-semibold text-gray-800 mb-1">{resma.nombre}</h3>
-              <p className="text-sm text-gray-600">{resma.descripcion}</p>
+              <h3 className="text-md font-semibold text-gray-800 dark:text-slate-200 mb-1 transition-colors duration-300">{resma.nombre}</h3>
+              <p className="text-sm text-gray-600 dark:text-slate-400 transition-colors duration-300">{resma.descripcion}</p>
             </button>
           ))}
         </div>
       </div>
 
+      {/* Detalle de Resma Seleccionada */}
       {resmaSeleccionada && (
-        <div className="mt-8 bg-gray-50 border border-gray-200 rounded-lg p-6 shadow-inner text-center">
-          <h2 className="text-xl font-bold text-violet-700 mb-4">{resmaSeleccionada.nombre}</h2>
-          <p className="text-gray-700 mb-4">{resmaSeleccionada.descripcion}</p>
-          <img
-            src={resmaSeleccionada.imagen}
-            alt={`Ejemplo de ${resmaSeleccionada.nombre}`}
-            className="mx-auto max-w-xs rounded-md shadow"
-          />
+        <div className="mt-8 bg-gray-50 dark:bg-slate-900/50 border border-gray-200 dark:border-slate-700 rounded-lg p-6 shadow-inner text-center transition-colors duration-300">
+          <h2 className="text-xl font-bold text-violet-700 dark:text-violet-400 mb-4 transition-colors duration-300">{resmaSeleccionada.nombre}</h2>
+          <p className="text-gray-700 dark:text-slate-300 mb-4 transition-colors duration-300">{resmaSeleccionada.descripcion}</p>
+          <div className="bg-white dark:bg-slate-800 p-2 inline-block rounded-md shadow-sm transition-colors duration-300">
+             <img
+               src={resmaSeleccionada.imagen}
+               alt={`Ejemplo de ${resmaSeleccionada.nombre}`}
+               className="mx-auto max-w-xs rounded-md shadow"
+             />
+          </div>
         </div>
       )}
 
       {/* Preguntas frecuentes */}
       <div className="mt-16">
+        {/* El componente Consultas lo vamos a tener que pintar también si no lo hicimos todavía */}
         <Consultas />
       </div>
     </section>

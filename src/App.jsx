@@ -1,19 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import "./App.css";
-import  preciosPorPapel  from "./componentes/preciosPorPapel.jsx";
+import preciosPorPapel from "./componentes/preciosPorPapel.jsx";
 import Header from "./componentes/Header";
 import Inicio from "./componentes/Inicio";
 import Resmas from "./componentes/Resmas";
 import VistaFormulario from "./componentes/VistaFormulario";
 import ResumenCarrito from "./componentes/ResumenCarrito";
-import Footer from "./componentes/Footer"
+import Footer from "./componentes/Footer";
 import { calcularDescuento } from "./utilidades/calcularDescuento.jsx";
-import { Toaster } from 'react-hot-toast';
+import { Toaster } from "react-hot-toast";
 
 const obtenerCarritoInicial = () => {
   try {
-    console.log(preciosPorPapel)
     const guardado = localStorage.getItem("carrito");
     const parsed = JSON.parse(guardado);
     return Array.isArray(parsed) ? parsed : [];
@@ -27,6 +26,27 @@ function App() {
   const [nombreCliente, setNombreCliente] = useState("");
   const [telefonoCliente, setTelefonoCliente] = useState("");
 
+  // 🌙 LÓGICA DE MODO OSCURO
+  const [modoOscuro, setModoOscuro] = useState(() => {
+    const temaGuardado = localStorage.getItem("tema");
+    if (temaGuardado) return temaGuardado === "dark";
+    return window.matchMedia("(prefers-color-scheme: dark)").matches;
+  });
+
+  useEffect(() => {
+    const root = document.documentElement;
+    if (modoOscuro) {
+      root.classList.add("dark");
+      localStorage.setItem("tema", "dark");
+    } else {
+      root.classList.remove("dark");
+      localStorage.setItem("tema", "light");
+    }
+  }, [modoOscuro]);
+
+  const toggleModoOscuro = () => setModoOscuro(!modoOscuro);
+
+  // 🛒 LÓGICA DEL CARRITO
   useEffect(() => {
     localStorage.setItem("carrito", JSON.stringify(carrito));
   }, [carrito]);
@@ -46,7 +66,7 @@ function App() {
             : item
         );
       } else {
-        return [...prevCarrito, { ...producto, cantidad: 1 }];
+        return [...prevCarrito, { ...producto, cantidad: producto.cantidad || 1 }];
       }
     });
   };
@@ -59,13 +79,10 @@ function App() {
     setCarrito([]);
   };
 
-  // ✅ Separar productos por tipo
-  const impresiones = carrito.filter(
-    (item) => item.detalles?.tipo === "impresion"
-  );
+  // 📊 CÁLCULOS DE TOTALES
+  const impresiones = carrito.filter((item) => item.detalles?.tipo === "impresion");
   const resmas = carrito.filter((item) => item.detalles?.tipo === "resma");
 
-  // ✅ Calcular totales por tipo
   const totalPaginas = impresiones.reduce(
     (acc, item) => acc + (item.detalles?.paginas || 0) * (item.cantidad || 1),
     0
@@ -84,16 +101,25 @@ function App() {
 
   const totalResmas = resmas.reduce((acc, item) => {
     const cantidad = item.cantidad || 1;
-    const pagadas = cantidad - Math.floor(cantidad / 5); // promo 5x4
+    const pagadas = cantidad - Math.floor(cantidad / 5); // Promo 5x4
     return acc + item.price * pagadas;
   }, 0);
 
   const totalFinal = totalImpresionesConDescuento + totalResmas;
-  
+
   return (
     <>
-      <Header cartCount={carrito.length} />
-      <main className="py-6 px-4">
+      <Header
+        cartCount={carrito.length}
+        modoOscuro={modoOscuro}
+        toggleModoOscuro={toggleModoOscuro}
+      />
+
+      {/* Acá está la magia global: 
+        bg-slate-50 / text-slate-900 (Modo claro)
+        dark:bg-slate-900 / dark:text-slate-100 (Modo oscuro)
+      */}
+      <main className="py-6 px-4 min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-900 dark:text-slate-100 transition-colors duration-300">
         <Routes>
           <Route path="/" element={<Inicio />} />
           <Route
@@ -134,7 +160,8 @@ function App() {
           />
         </Routes>
       </main>
-      <Footer/>
+      
+      <Footer />
       <Toaster position="bottom-right" reverseOrder={false} />
     </>
   );

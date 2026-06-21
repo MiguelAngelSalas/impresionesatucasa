@@ -6,7 +6,7 @@ const resmas = [
     nombre: "Mate fino 110 Grs",
     descripcion: "Ideal para impresiones suaves y económicas.",
     imagen: "./global-matefino-110grA4.jpg",
-    precio: 16654.99, // ← completás vos
+    precio: 16654.99,
   },
   {
     id: "mateGrueso",
@@ -68,8 +68,8 @@ const resmas = [
 
 const Resmas = ({ agregarAlCarrito }) => {
   return (
-    <section className="max-w-6xl mx-auto px-4 py-12">
-      <h2 className="text-3xl font-bold text-violet-800 mb-8 text-center">
+    <section className="max-w-6xl mx-auto px-4 py-12 transition-colors duration-300">
+      <h2 className="text-3xl font-bold text-violet-800 dark:text-violet-400 mb-8 text-center transition-colors duration-300">
         Elegí tus resmas de papel
       </h2>
 
@@ -77,22 +77,29 @@ const Resmas = ({ agregarAlCarrito }) => {
         {resmas.map((resma) => (
           <div
             key={resma.id}
-            className="border border-violet-200 rounded-xl shadow-md p-6 bg-white hover:shadow-lg transition-all relative"
+            className="border border-violet-200 dark:border-slate-700 rounded-xl shadow-md dark:shadow-black/40 p-6 bg-white dark:bg-slate-800 hover:shadow-lg transition-all relative"
           >
-            <div className="relative w-full h-40 rounded-md overflow-hidden">
+            {/* Le agregué un fondo sutil a la caja de la imagen por si alguna foto tiene fondo transparente */}
+            <div className="relative w-full h-40 rounded-md overflow-hidden bg-slate-50 dark:bg-slate-700/50 transition-colors duration-300">
               <img
                 src={resma.imagen}
                 alt={resma.nombre}
                 className="w-full h-full object-cover transition-transform duration-300 ease-in-out hover:scale-150"
               />
             </div>
-            <h3 className="text-lg font-semibold text-violet-700 mb-2 mt-4">
+            
+            <h3 className="text-lg font-semibold text-violet-700 dark:text-violet-300 mb-2 mt-4 transition-colors duration-300">
               {resma.nombre}
             </h3>
-            <p className="text-sm text-gray-600 mb-2">{resma.descripcion}</p>
-            <p className="text-sm text-gray-800 font-medium mb-4">
-              Precio: <span className="text-violet-700">{resma.precio !== null ? `$${resma.precio}` : "—"}</span>
+            
+            <p className="text-sm text-gray-600 dark:text-slate-300 mb-2 transition-colors duration-300">
+              {resma.descripcion}
             </p>
+            
+            <p className="text-sm text-gray-800 dark:text-slate-200 font-medium mb-4 transition-colors duration-300">
+              Precio: <span className="text-violet-700 dark:text-violet-400 font-bold">{resma.precio !== null ? `$${resma.precio}` : "—"}</span>
+            </p>
+            
             <button
               onClick={() =>
                 agregarAlCarrito({
@@ -102,7 +109,7 @@ const Resmas = ({ agregarAlCarrito }) => {
                   detalles: { tipo: "resma" },
                 })
               }
-              className="mt-auto w-full bg-violet-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-violet-700 transition"
+              className="mt-auto w-full bg-violet-600 dark:bg-violet-700 text-white py-2 rounded-lg text-sm font-medium hover:bg-violet-700 dark:hover:bg-violet-600 transition-colors duration-300"
             >
               Agregar al pedido
             </button>
@@ -114,5 +121,3 @@ const Resmas = ({ agregarAlCarrito }) => {
 };
 
 export default Resmas;
-
-

@@ -23,14 +23,21 @@ const DetallePrecio = ({ totalPaginas, tipoPapel, precioSinDescuento, descuento 
   if (!totalPaginas || !tipoPapel) return null;
 
   return (
-    <div className="text-center text-violet-700 font-semibold text-lg space-y-1">
-      📄 Total páginas: {totalPaginas} <br />
-      🧾 Papel seleccionado: {formatearTipoPapel(tipoPapel)} <br />
-      💰 Precio estimado: ${precioSinDescuento} <br />
+    <div className="bg-violet-50 dark:bg-slate-800/50 border border-violet-100 dark:border-slate-600/50 rounded-lg p-4 text-center text-violet-700 dark:text-violet-300 font-semibold text-base sm:text-lg space-y-2 transition-colors duration-300 shadow-sm mt-4">
+      <p>
+        📄 Total páginas: <span className="text-violet-900 dark:text-violet-100">{totalPaginas}</span>
+      </p>
+      <p>
+        🧾 Papel seleccionado: <span className="text-violet-900 dark:text-violet-100">{formatearTipoPapel(tipoPapel)}</span>
+      </p>
+      <p>
+        💰 Precio estimado: <span className="text-violet-900 dark:text-violet-100">${precioSinDescuento}</span>
+      </p>
+      
       {descuento > 0 && (
-        <>
-          🎉 Descuento proyectado: {descuento * 100}% <br />
-        </>
+        <p className="text-green-700 dark:text-green-400 font-bold mt-2 pt-2 border-t border-violet-200 dark:border-slate-600/50 transition-colors duration-300">
+          🎉 Descuento proyectado: {descuento * 100}%
+        </p>
       )}
     </div>
   );

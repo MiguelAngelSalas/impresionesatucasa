@@ -5,9 +5,9 @@ const SelectorPapel = ({ value, onChange }) => {
     <select
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-violet-400"
+      className="w-full bg-white dark:bg-slate-700 border border-gray-300 dark:border-slate-600 rounded-lg px-3 py-2 text-gray-700 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-violet-400 dark:focus:ring-violet-500 transition-colors duration-300"
     >
-      <option value="">Seleccioná tipo de papel</option>
+      <option value="" className="text-gray-500 dark:text-slate-400">Seleccioná tipo de papel</option>
       <option value="comunByN">Papel obra 80 grs</option>
       <option value="fotoFino">Foto fino 140 Grs</option>
       <option value="fotoGrueso">Foto Grueso 200 Grs</option>
@@ -22,6 +22,5 @@ const SelectorPapel = ({ value, onChange }) => {
     </select>
   );
 };
-
 
 export default SelectorPapel;

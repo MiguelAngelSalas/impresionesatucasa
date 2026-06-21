@@ -1,24 +1,24 @@
+import React from "react";
+
 export default function Footer() {
   return (
-    <footer style={{
-      display: "flex",
-      justifyContent: "space-between",
-      flexWrap: "wrap",
-      padding: "2rem",
-      backgroundColor: "#f2f2f2",
-      borderTop: "1px solid #ccc"
-    }}>
+    <footer className="flex justify-between flex-wrap p-8 bg-slate-100 dark:bg-slate-900 border-t border-violet-200 dark:border-slate-800 transition-colors duration-300 gap-8">
+      
       {/* Columna izquierda */}
-      <div style={{ flex: "1", minWidth: "200px" }}>
-        <h3 style={{ marginBottom: "0.5rem", fontSize: "1.2rem" }}>Impresiones a tu casa</h3>
-        <p style={{ fontSize: "1rem" }}>Temperley, Buenos Aires</p>
-        <p style={{ fontSize: "1rem" }}>
+      <div className="flex-1 min-w-[200px]">
+        <h3 className="mb-2 text-xl font-bold text-violet-800 dark:text-violet-400 transition-colors duration-300">
+          Impresiones a tu casa
+        </h3>
+        <p className="text-base text-gray-700 dark:text-slate-300 mb-1 transition-colors duration-300">
+          Temperley, Buenos Aires
+        </p>
+        <p className="text-base text-gray-700 dark:text-slate-300 transition-colors duration-300">
           © {new Date().getFullYear()}{" "}
           <a
             href="https://impresionesatucasa.com.ar"
             target="_blank"
             rel="noopener noreferrer"
-            style={{ textDecoration: "none", color: "inherit", fontWeight: "bold" }}
+            className="font-bold text-violet-700 dark:text-violet-400 hover:text-violet-900 dark:hover:text-violet-300 transition-colors duration-300"
           >
             impresionesatucasa.com.ar
           </a>
@@ -26,55 +26,58 @@ export default function Footer() {
       </div>
 
       {/* Columna derecha */}
-      <div style={{ flex: "1", minWidth: "200px", textAlign: "right" }}>
-        <h4 style={{ fontSize: "1.2rem", marginBottom: "1rem" }}>Contacto</h4>
+      <div className="flex-1 min-w-[200px] sm:text-right">
+        <h4 className="text-xl font-bold mb-4 text-violet-800 dark:text-violet-400 transition-colors duration-300">
+          Contacto
+        </h4>
 
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", marginBottom: "1.2rem" }}>
+        <div className="flex items-center justify-start sm:justify-end mb-4">
           <a
             href="https://wa.me/5491123909529"
             target="_blank"
             rel="noopener noreferrer"
-            style={{ textDecoration: "none", color: "inherit", fontSize: "1.05rem", marginRight: "12px" }}
+            className="text-lg mr-3 text-gray-700 dark:text-slate-300 hover:text-violet-700 dark:hover:text-violet-400 transition-colors duration-300"
           >
             WhatsApp
           </a>
           <img
             src="/logoWhatsap.png"
             alt="WhatsApp"
-            style={{ width: "32px" }}
+            className="w-8 hover:scale-110 transition-transform duration-300"
           />
         </div>
 
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", marginBottom: "1.2rem" }}>
+        <div className="flex items-center justify-start sm:justify-end mb-4">
           <a
             href="mailto:impresionesatucasaa@gmail.com"
-            style={{ textDecoration: "none", color: "inherit", fontSize: "1.05rem", marginRight: "12px" }}
+            className="text-lg mr-3 text-gray-700 dark:text-slate-300 hover:text-violet-700 dark:hover:text-violet-400 transition-colors duration-300"
           >
             impresionesatucasaa@gmail.com
           </a>
           <img
             src="/logoGmail.png"
             alt="Email"
-            style={{ width: "32px" }}
+            className="w-8 hover:scale-110 transition-transform duration-300"
           />
         </div>
 
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", marginBottom: "1.2rem" }}>
+        <div className="flex items-center justify-start sm:justify-end mb-4">
           <a
             href="https://www.facebook.com/impresionesatucasa"
             target="_blank"
             rel="noopener noreferrer"
-            style={{ textDecoration: "none", color: "inherit", fontSize: "1.05rem", marginRight: "12px" }}
+            className="text-lg mr-3 text-gray-700 dark:text-slate-300 hover:text-violet-700 dark:hover:text-violet-400 transition-colors duration-300"
           >
             Facebook
           </a>
           <img
             src="/logoFacebook.png"
             alt="Facebook"
-            style={{ width: "32px" }}
+            className="w-8 hover:scale-110 transition-transform duration-300"
           />
         </div>
       </div>
+      
     </footer>
   );
 }
