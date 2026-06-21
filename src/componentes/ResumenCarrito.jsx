@@ -76,13 +76,16 @@ const ResumenCarrito = ({
   const manejarEnviarPedido = async () => {
     if (!carrito.length) {
       toast.error("El carrito está vacío 🛒");
+      toast.error("El carrito está vacío 🛒");
       return;
     }
     if (!nombreCliente || !nombreCliente.trim()) {
       toast.error("Por favor ingrese su nombre 👤");
+      toast.error("Por favor ingrese su nombre 👤");
       return;
     }
     if (!telefonoCliente || !telefonoCliente.trim()) {
+      toast.error("Por favor ingrese su teléfono 📱");
       toast.error("Por favor ingrese su teléfono 📱");
       return;
     }

@@ -5,7 +5,7 @@ export default function Footer() {
     <footer className="flex justify-between flex-wrap p-8 bg-slate-100 dark:bg-slate-900 border-t border-violet-200 dark:border-slate-800 transition-colors duration-300 gap-8">
       
       {/* Columna izquierda */}
-      <div className="flex-1 min-w-[200px]">
+      <div className="flex-1 min-w-50">
         <h3 className="mb-2 text-xl font-bold text-violet-800 dark:text-violet-400 transition-colors duration-300">
           Impresiones a tu casa
         </h3>
@@ -26,7 +26,7 @@ export default function Footer() {
       </div>
 
       {/* Columna derecha */}
-      <div className="flex-1 min-w-[200px] sm:text-right">
+      <div className="flex-1 min-w-50 sm:text-right">
         <h4 className="text-xl font-bold mb-4 text-violet-800 dark:text-violet-400 transition-colors duration-300">
           Contacto
         </h4>
