@@ -74,8 +74,8 @@ export function GlobalProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    const API_BASE = process.env.NODE_ENV === "development" 
-      ? "http://localhost:3001" 
+    const API_BASE = "https://api.impresionesatucasa.com.ar";
+
       : "https://api.impresionesatucasa.com.ar";
 
     // Indicamos que el proceso inició
