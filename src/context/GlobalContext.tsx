@@ -2,7 +2,7 @@
 
 import React, { createContext, useState, useEffect, ReactNode, Dispatch, SetStateAction } from "react";
 import { calcularDescuento } from "@/utilidades/calcularDescuento";
-import toast from "react-hot-toast"; // <--- Importación de la librería
+import toast from "react-hot-toast";
 
 export interface Producto {
   id: string;
@@ -45,6 +45,9 @@ export function GlobalProvider({ children }: { children: ReactNode }) {
   const [telefonoCliente, setTelefonoCliente] = useState("");
   const [modoOscuro, setModoOscuro] = useState(false);
 
+  // Asegúrate de que esta variable exista en Vercel Settings -> Environment Variables
+  const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+
   useEffect(() => {
     const isDark = localStorage.getItem("theme") === "dark";
     setModoOscuro(isDark);
@@ -74,11 +77,6 @@ export function GlobalProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    const API_BASE = "https://api.impresionesatucasa.com.ar";
-
-      : "https://api.impresionesatucasa.com.ar";
-
-    // Indicamos que el proceso inició
     const loadingToast = toast.loading("Subiendo archivos y procesando pedido...");
 
     try {
@@ -88,6 +86,7 @@ export function GlobalProvider({ children }: { children: ReactNode }) {
         if (producto.detalles?.tipo === "impresion" && producto.detalles?.archivo) {
           const file = producto.detalles.archivo as File;
 
+          // Petición al backend
           const respuestaFirma = await fetch(`${API_BASE}/api/pedidos/firma-r2`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -97,7 +96,12 @@ export function GlobalProvider({ children }: { children: ReactNode }) {
             }),
           });
 
-          if (!respuestaFirma.ok) throw new Error("No se pudo obtener la firma de subida.");
+          // Manejo detallado de errores para encontrar el origen del 503/CORS
+          if (!respuestaFirma.ok) {
+            const errorText = await respuestaFirma.text();
+            console.error("Error al obtener firma:", respuestaFirma.status, errorText);
+            throw new Error(`Servidor respondió: ${respuestaFirma.status}`);
+          }
           
           const { urlFirma, fileKey } = await respuestaFirma.json();
 
@@ -111,51 +115,41 @@ export function GlobalProvider({ children }: { children: ReactNode }) {
 
           itemsProcesados.push({
             ...producto,
-            detalles: {
-              ...producto.detalles,
-              archivo: fileKey,
-            },
+            detalles: { ...producto.detalles, archivo: fileKey },
           });
         } else {
           itemsProcesados.push(producto);
         }
       }
 
-      const payloadFinal = {
-        cliente: nombreCliente.trim(),
-        telefono: telefonoCliente.trim(),
-        pedido: { items: itemsProcesados }
-      };
-
       const response = await fetch(`${API_BASE}/api/pedidos`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payloadFinal),
+        body: JSON.stringify({
+            cliente: nombreCliente.trim(),
+            telefono: telefonoCliente.trim(),
+            pedido: { items: itemsProcesados }
+        }),
       });
 
-      if (!response.ok) {
-        throw new Error("Error en el servidor al crear el pedido.");
-      }
+      if (!response.ok) throw new Error("Error al crear el pedido en el servidor.");
 
       const data = await response.json();
+      toast.dismiss(loadingToast);
       
-      toast.dismiss(loadingToast); // Quitamos el loading
-
       setNombreCliente("");
       setTelefonoCliente("");
       vaciarCarrito();
 
       if (data.initPoint) {
-        toast.success("¡Pedido exitoso! Redirigiendo a pago...");
         window.location.href = data.initPoint;
       } else {
         toast.success("🚀 Pedido enviado. ¡Nos contactaremos pronto!");
       }
-
     } catch (error) {
-      console.error("❌ Error:", error);
+      console.error("❌ Error completo:", error);
       toast.dismiss(loadingToast);
-      toast.error("❌ Error: No se pudo completar el proceso.");
+      toast.error("❌ Error: Verifica la conexión con el servidor.");
     }
   };
 
