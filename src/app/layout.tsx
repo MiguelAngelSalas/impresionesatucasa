@@ -10,17 +10,17 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: {
-    default: "Impresiones Online y Foto a Domicilio | Envíos a todo el País",
+    default: "Impresiones Online y Fotos a Domicilio | Envíos a todo el País",
     template: "%s | Impresiones a tu Casa",
   },
   description: "Subí tus archivos PDF online y recibí tus impresiones, apuntes de facultad o cuadernillos directo en tu casa en cualquier provincia de Argentina. ¡Económico y rápido!",
-  keywords: ["impresiones online argentina", "fotocopias a domicilio", "imprimir pdf online", "apuntes facultad envio a domicilio"],
+  keywords: ["impresiones online argentina", "fotocopias a domicilio","fotos a domicilio", "imprimir pdf online", "apuntes facultad envio a domicilio", "styckers con envio a domicilio"],
   alternates: {
     canonical: "https://www.impresionesatucasa.com.ar",
   },
   openGraph: {
     title: "Impresiones a tu Casa - Envíos a todo el País",
-    description: "Subí tus PDFs y recibí tus apuntes o fotocopias en tu casa sin moverte.",
+    description: "Subí tus PDFs y recibí tus apuntes o fotos en tu casa sin moverte.",
     url: "https://impresionesatucasa.com.ar",
     siteName: "Impresiones a tu Casa",
     locale: "es_AR",
