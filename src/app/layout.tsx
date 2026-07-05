@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     template: "%s | Impresiones a tu Casa",
   },
   description: "Subí tus archivos PDF online y recibí tus impresiones, apuntes de facultad o cuadernillos directo en tu casa en cualquier provincia de Argentina. ¡Económico y rápido!",
-  keywords: ["impresiones online argentina", "fotocopias a domicilio","fotos a domicilio", "imprimir pdf online", "apuntes facultad envio a domicilio", "styckers con envio a domicilio"],
+  keywords: ["impresiones online argentina", "fotocopias a domicilio","fotos a domicilio", "imprimir pdf online", "apuntes facultad envio a domicilio", "styckers con envio a domicilio", ""],
   alternates: {
     canonical: "https://www.impresionesatucasa.com.ar",
   },
