@@ -3,6 +3,7 @@
 import { useContext, useState } from "react";
 import { GlobalContext } from "@/context/GlobalContext";
 import { Trash2, CheckCircle, ShoppingBag, User, Phone, Loader2 } from "lucide-react";
+import SelectorEnvio from "@/components/SelectorEnvio"
 
 const formatoPrecio = (valor: number) =>
   valor.toLocaleString("es-AR", { style: "currency", currency: "ARS" });
@@ -96,6 +97,7 @@ export default function ResumenCarrito() {
                 className="w-full pl-10 p-2.5 border rounded-lg dark:bg-slate-700 dark:border-slate-600 outline-none focus:ring-2 focus:ring-violet-500 disabled:opacity-50"
               />
             </div>
+            <SelectorEnvio/>
           </div>
 
           <div className="mt-6 border-t pt-4 text-sm space-y-2">

@@ -19,6 +19,11 @@ export interface Producto {
   cantidad: number;
 }
 
+export interface  TipoEnvio{
+  nombre: string,
+  costo: number
+}
+
 export interface GlobalContextType {
   carrito: Producto[];
   agregarAlCarrito: (producto: Producto) => void;
@@ -35,7 +40,13 @@ export interface GlobalContextType {
   manejarEnviarPedido: () => Promise<void>;
   modoOscuro: boolean;
   toggleModoOscuro: () => void;
+  envio: TipoEnvio;
+  setEnvio: Dispatch<SetStateAction<TipoEnvio>>
+
 }
+
+
+
 
 export const GlobalContext = createContext<GlobalContextType>({} as GlobalContextType);
 
@@ -44,6 +55,8 @@ export function GlobalProvider({ children }: { children: ReactNode }) {
   const [nombreCliente, setNombreCliente] = useState("");
   const [telefonoCliente, setTelefonoCliente] = useState("");
   const [modoOscuro, setModoOscuro] = useState(false);
+  const [envio, setEnvio] = useState<TipoEnvio>({nombre: "Coordinamos punto de retiro por WhatsApp", costo: 0})
+
 
   const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
@@ -68,7 +81,9 @@ export function GlobalProvider({ children }: { children: ReactNode }) {
   const totalPaginas = impresiones.reduce((acc, i) => acc + (i.detalles?.paginas || 0) * i.cantidad, 0);
   const totalImpresionesSinDescuento = impresiones.reduce((acc, i) => acc + (i.price * i.cantidad), 0);
   const descuento = calcularDescuento(totalPaginas);
-  const totalFinal = totalImpresionesSinDescuento * (1 - descuento);
+  const montoDescuento = totalImpresionesSinDescuento* descuento
+  const totalFinal = totalImpresionesSinDescuento -montoDescuento ;
+  const precioEnvio = envio.costo
 
   const manejarEnviarPedido = async () => {
     if (!nombreCliente.trim() || !telefonoCliente.trim() || carrito.length === 0) {
@@ -125,7 +140,9 @@ export function GlobalProvider({ children }: { children: ReactNode }) {
         body: JSON.stringify({
             cliente: nombreCliente.trim(),
             telefono: telefonoCliente.trim(),
-            pedido: { items: itemsProcesados }
+            pedido: { items: itemsProcesados },
+            precioEnvio: precioEnvio,
+            montoDescuento: montoDescuento
         }),
       });
 
@@ -168,7 +185,7 @@ export function GlobalProvider({ children }: { children: ReactNode }) {
       carrito, agregarAlCarrito, eliminarDelCarrito, vaciarCarrito,
       nombreCliente, setNombreCliente, telefonoCliente, setTelefonoCliente,
       totalPaginas, totalImpresionesSinDescuento, descuento, totalFinal, manejarEnviarPedido,
-      modoOscuro, toggleModoOscuro
+      modoOscuro, toggleModoOscuro, envio, setEnvio
     }}>
       {children}
     </GlobalContext.Provider>
