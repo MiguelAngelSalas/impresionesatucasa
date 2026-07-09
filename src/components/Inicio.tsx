@@ -12,15 +12,15 @@ interface Resma {
 }
 
 const resmas: Resma[] = [
-  { id: "mateFino", nombre: "Mate fino 110 Grs", descripcion: "Ideal para impresiones suaves y económicas.", imagen: "./global-matefino-110grA4.jpg" },
-  { id: "mateGrueso", nombre: "Mate grueso 210 Grs", descripcion: "Perfecto para presentaciones con cuerpo y textura.", imagen: "global-mateGruesoSimple-210grA4.webp" },
-  { id: "mateBifaz", nombre: "Mate bifaz 200 Grs", descripcion: "Impresión doble faz sin transparencias.", imagen: "arjet-mateBifaz-200grA4.webp" },
-  { id: "fotoFino", nombre: "Foto fino 140 Grs", descripcion: "Acabado brillante, ideal para flyers y fotos.", imagen: "global-fotoFino-140grA4.jpg" },
-  { id: "fotoGrueso", nombre: "Foto grueso 200 Grs", descripcion: "Alta calidad para impresiones premium.", imagen: "arjet-fotoGrueso-200grA4.webp" },
-  { id: "fotoPremium", nombre: "Foto premium 260 Grs", descripcion: "Acabado superior para fotos de alta definición.", imagen: "global-fotoPremium-260grA4.jpg" },
-  { id: "autoadhesivo", nombre: "Autoadhesivo 135 Grs", descripcion: "Pegatina estándar para etiquetas y promociones.", imagen: "global-autadhesivo-135grA4.webp" },
-  { id: "autoadhesivoPremium", nombre: "Autoadhesivo premium 115 Grs", descripcion: "Pegatina de alta calidad con mejor adherencia.", imagen: "arjet-autoadhesivoPremium-115grA4.webp" },
-  { id: "autoadhesivoResistente", nombre: "Autoadhesivo resistente al agua 88 Micrones", descripcion: "Ideal para etiquetas duraderas y resistentes a la humedad.", imagen: "arjet-filmiloBlancoResistente-88micronesA4.webp" },
+  { id: "mateFino", nombre: "Mate fino 110 Grs", descripcion: "Ideal para impresiones suaves, flyers y papelería económica.", imagen: "./global-matefino-110grA4.jpg" },
+  { id: "mateGrueso", nombre: "Mate grueso 210 Grs", descripcion: "Perfecto para tarjetas de presentación, invitaciones y gráficas con cuerpo.", imagen: "global-mateGruesoSimple-210grA4.webp" },
+  { id: "mateBifaz", nombre: "Mate bifaz 200 Grs", descripcion: "Impresión doble faz sin transparencias. Ideal catálogos o folletos.", imagen: "arjet-mateBifaz-200grA4.webp" },
+  { id: "fotoFino", nombre: "Foto fino 140 Grs", descripcion: "Acabado brillante para resaltar colores en fotos o catálogos livianos.", imagen: "global-fotoFino-140grA4.jpg" },
+  { id: "fotoGrueso", nombre: "Foto grueso 200 Grs", descripcion: "Alta calidad fotográfica. Excelente para cuadros y fotos sueltas.", imagen: "arjet-fotoGrueso-200grA4.webp" },
+  { id: "fotoPremium", nombre: "Foto premium 260 Grs", descripcion: "Acabado superior y rígido para fotografías de alta definición y retratos.", imagen: "global-fotoPremium-260grA4.jpg" },
+  { id: "autoadhesivo", nombre: "Autoadhesivo 135 Grs", descripcion: "Ideal para imprimir tus planchas de stickers y etiquetas personalizadas.", imagen: "global-autadhesivo-135grA4.webp" },
+  { id: "autoadhesivoPremium", nombre: "Autoadhesivo premium 115 Grs", descripcion: "Stickers de alta calidad con mejor adherencia para el packaging de tu marca.", imagen: "arjet-autoadhesivoPremium-115grA4.webp" },
+  { id: "autoadhesivoResistente", nombre: "Autoadhesivo resistente 88 Mic.", descripcion: "Etiquetas duraderas que soportan la humedad. Perfectas para frascos o envases.", imagen: "arjet-filmiloBlancoResistente-88micronesA4.webp" },
 ];
 
 export default function Inicio() {
@@ -32,21 +32,27 @@ export default function Inicio() {
       
       <div className="bg-white dark:bg-slate-800 border border-violet-200 dark:border-slate-700 rounded-xl shadow-lg dark:shadow-black/40 p-6 sm:p-8 text-center transition-all duration-300 hover:shadow-xl mb-10">
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 text-violet-800 dark:text-violet-400 tracking-tight transition-colors duration-300">
-          Impresión de PDFs y Fotos Online con <span className="text-violet-600 dark:text-violet-300 block sm:inline">Envíos a todo el País</span>
+          Impresión de Planchas de Stickers, Fotos y Etiquetas en <span className="text-violet-600 dark:text-violet-300 block sm:inline">Alta Calidad</span>
         </h1>
         
         <p className="text-base sm:text-lg text-gray-700 dark:text-slate-300 mb-4 max-w-3xl mx-auto transition-colors duration-300">
-          Subís tus archivos desde cualquier provincia, elegís el tipo de papel especial que necesitás, y nosotros nos encargamos del resto de forma rápida y económica.
+          ¿Tenés tus diseños armados en Canva o Illustrator? Subí tu archivo PDF, elegí el papel fotográfico o autoadhesivo que necesites, y te lo mandamos impreso a tu casa.
         </p>
         
-        <p className="text-base sm:text-lg text-violet-700 dark:text-violet-300 mb-4 font-medium transition-colors duration-300">
-          Coordinamos el envío directo a tu domicilio para que recibas tus apuntes o cuadernillos sin moverte.
+        <div className="inline-block bg-violet-50 dark:bg-slate-900/50 border border-violet-100 dark:border-violet-900 rounded-lg p-3 mt-2 mb-4">
+          <p className="text-sm sm:text-base text-violet-700 dark:text-violet-300 font-medium transition-colors duration-300">
+            📌 Recordatorio: Para garantizar la mejor resolución, aceptamos únicamente archivos en formato PDF (Tamaño A4).
+          </p>
+        </div>
+
+        <p className="text-sm text-gray-500 dark:text-slate-400 mt-2 transition-colors duration-300">
+          Envíos a todo el país y entregas rápidas en Zona Sur.
         </p>
       </div>
 
       <div className="overflow-x-auto">
         <h2 className="text-xl sm:text-2xl font-semibold text-violet-700 dark:text-violet-400 mb-4 text-center transition-colors duration-300">
-          Tipos de Papeles y Resmas con los que Trabajamos
+          Tipos de Papeles Especiales para tus Diseños
         </h2>
         <div className="flex space-x-4 pb-4">
           {resmas.map((resma) => (
@@ -69,7 +75,7 @@ export default function Inicio() {
           <div className="bg-white dark:bg-slate-800 p-2 inline-block rounded-md shadow-sm transition-colors duration-300">
              <img
                src={resmaSeleccionada.imagen}
-               alt={`Ejemplo de ${resmaSeleccionada.nombre}`}
+               alt={`Ejemplo de impresión en papel ${resmaSeleccionada.nombre}`}
                className="mx-auto max-w-xs rounded-md shadow"
              />
           </div>
