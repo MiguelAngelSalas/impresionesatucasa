@@ -5,22 +5,31 @@ import { GlobalProvider } from "@/context/GlobalContext";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import type { Metadata } from "next";
-import Script from "next/script"; // Importante para scripts externos
+import Script from "next/script";
 import "./globals.css";
 
 export const metadata: Metadata = {
   title: {
-    default: "Impresiones Online y Fotos a Domicilio | Envíos a todo el País",
+    default: "Impresión de Planchas de Stickers, tarjetas y Fotos | Envíos a Domicilio",
     template: "%s | Impresiones a tu Casa",
   },
-  description: "Subí tus archivos PDF online y recibí tus impresiones, apuntes de facultad o cuadernillos directo en tu casa en cualquier provincia de Argentina. ¡Económico y rápido!",
-  keywords: ["impresiones online argentina", "fotocopias a domicilio","fotos a domicilio", "imprimir pdf online", "apuntes facultad envio a domicilio", "styckers con envio a domicilio", ""],
+  description: "Impresión de planchas de stickers, etiquetas y fotos en alta calidad. Subí tu PDF (A4) y recibilo en tu casa. Ideal para emprendedores. Envíos a todo el país y Zona Sur.",
+  keywords: [
+    "impresion de stickers", 
+    "planchas de etiquetas", 
+    "impresion de fotos", 
+    "imprimir pdf fotografico", 
+    "imprimir diseños de canva", 
+    "imprenta cerca", 
+    "zona sur",
+    "stickers emprendedores"
+  ],
   alternates: {
-    canonical: "https://www.impresionesatucasa.com.ar",
+    canonical: "https://www.impresionesatucasa.com.ar", 
   },
   openGraph: {
-    title: "Impresiones a tu Casa - Envíos a todo el País",
-    description: "Subí tus PDFs y recibí tus apuntes o fotos en tu casa sin moverte.",
+    title: "Impresión de Planchas de Stickers, Fotos y Etiquetas",
+    description: "Subí tu PDF con tus diseños y nosotros te lo imprimimos en papel fotografico premium o autoadhesivo. Ideal para emprendedores y creativos.",
     url: "https://impresionesatucasa.com.ar",
     siteName: "Impresiones a tu Casa",
     locale: "es_AR",
@@ -32,7 +41,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="es">
       <head>
-        {/* Script de Mercado Pago cargado de forma optimizada */}
         <Script 
           src="https://sdk.mercadopago.com/js/v2" 
           strategy="lazyOnload" 
