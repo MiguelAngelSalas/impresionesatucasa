@@ -1,5 +1,14 @@
 // src/app/carrito/page.tsx
 import ResumenCarrito from "@/components/ResumenCarrito";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Carrito de Compras",
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
 
 export default function CarritoPage() {
   return (
