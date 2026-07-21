@@ -1,8 +1,37 @@
+"use client"
 import Link from "next/link";
 // Cambiamos Bike por Truck
+import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { CheckCircle2, FileText, PackageCheck, Truck } from "lucide-react"; 
 
+
 export default function PaginaExito() {
+
+  const router = useRouter()
+  const serchParams = useSearchParams()
+
+  const [autorizado, setAutorizado] = useState(false)
+    const estadoPago = serchParams.get("collections_status")
+
+    const pagoAprovado = estadoPago==="approved"
+  useEffect(()=>{
+    
+    
+    if (!pagoAprovado){
+        router.push("/");
+    }
+  }, [pagoAprovado, router])
+  if (!pagoAprovado){
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-slate-900">
+        <div className="animate-pulse flex flex-col items-center">
+           {/* Un texto de carga sutil para que no quede la pantalla en blanco */}
+           <p className="text-violet-600 dark:text-violet-400 font-medium mt-4">Validando seguridad...</p>
+        </div>
+      </div>
+    );
+  }
   return (
     <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 transition-colors duration-300">
       
