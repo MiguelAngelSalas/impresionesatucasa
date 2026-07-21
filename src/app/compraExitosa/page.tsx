@@ -1,12 +1,12 @@
 "use client"
 import Link from "next/link";
 // Cambiamos Bike por Truck
-import { useEffect, useState } from "react";
+import { Suspense,useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { CheckCircle2, FileText, PackageCheck, Truck } from "lucide-react"; 
 
 
-export default function PaginaExito() {
+function ContenidoExitoso() {
 
   const router = useRouter()
   const serchParams = useSearchParams()
@@ -89,4 +89,16 @@ export default function PaginaExito() {
       </div>
     </main>
   );
+}
+
+export default function CompraExitosa(){
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-slate-900">
+                <p className="text-violet-600 dark:text-violet-400 font-medium animate-pulse">Cargando...</p>
+            </div>
+        }>
+            <ContenidoExitoso/>
+        </Suspense>
+    )
 }
