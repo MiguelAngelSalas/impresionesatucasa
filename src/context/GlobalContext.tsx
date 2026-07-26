@@ -33,6 +33,10 @@ export interface GlobalContextType {
   setNombreCliente: Dispatch<SetStateAction<string>>; 
   telefonoCliente: string;
   setTelefonoCliente: Dispatch<SetStateAction<string>>; 
+  domicilioCliente: string;
+  setDomicilioCliente: Dispatch<SetStateAction<string>>;
+  localidadCliente: string;
+  setLocalidadCliente: Dispatch<SetStateAction<string>>;
   totalPaginas: number;
   totalImpresionesSinDescuento: number;
   descuento: number;
@@ -55,7 +59,9 @@ export function GlobalProvider({ children }: { children: ReactNode }) {
   const [nombreCliente, setNombreCliente] = useState("");
   const [telefonoCliente, setTelefonoCliente] = useState("");
   const [modoOscuro, setModoOscuro] = useState(false);
-  const [envio, setEnvio] = useState<TipoEnvio>({nombre: "Coordinamos punto de retiro por WhatsApp", costo: 0})
+  const [envio, setEnvio] = useState<TipoEnvio>({nombre: "Retiro en punto de encuentro (Gratis)", costo: 0})
+  const [domicilioCliente, setDomicilioCliente] = useState("");
+  const [localidadCliente, setLocalidadCliente] = useState("");
 
 
   const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
@@ -86,7 +92,10 @@ export function GlobalProvider({ children }: { children: ReactNode }) {
   const precioEnvio = envio.costo
 
   const manejarEnviarPedido = async () => {
-    if (!nombreCliente.trim() || !telefonoCliente.trim() || carrito.length === 0) {
+
+    const esEnvio = envio.nombre!== "Retiro en punto de encuentro (Gratis)"
+
+    if (!nombreCliente.trim() || !telefonoCliente.trim() || carrito.length === 0 || (esEnvio && (!domicilioCliente.trim() || !localidadCliente.trim()))) {
       toast.error("⚠️ Faltan datos: Asegurate de ingresar tu nombre, teléfono y tener productos en el carrito.");
       return;
     }
@@ -140,6 +149,8 @@ export function GlobalProvider({ children }: { children: ReactNode }) {
         body: JSON.stringify({
             cliente: nombreCliente.trim(),
             telefono: telefonoCliente.trim(),
+            domicilio: esEnvio ? domicilioCliente.trim(): "Con envio",
+            localidad: esEnvio ? localidadCliente.trim(): "Retiro en punto de encuentro (Gratis)",
             pedido: { items: itemsProcesados },
             precioEnvio: precioEnvio,
             montoDescuento: montoDescuento
@@ -160,6 +171,8 @@ export function GlobalProvider({ children }: { children: ReactNode }) {
         // Limpiamos los campos
         setNombreCliente("");
         setTelefonoCliente("");
+        setDomicilioCliente("");
+        setLocalidadCliente("");
         vaciarCarrito();
         
         // Pequeña pausa para que el usuario pueda ver el toast
@@ -170,6 +183,8 @@ export function GlobalProvider({ children }: { children: ReactNode }) {
         toast.success("🚀 Pedido enviado. ¡Nos contactaremos pronto!");
         setNombreCliente("");
         setTelefonoCliente("");
+        setDomicilioCliente("");
+        setLocalidadCliente("");
         vaciarCarrito();
       }
 
@@ -185,7 +200,7 @@ export function GlobalProvider({ children }: { children: ReactNode }) {
       carrito, agregarAlCarrito, eliminarDelCarrito, vaciarCarrito,
       nombreCliente, setNombreCliente, telefonoCliente, setTelefonoCliente,
       totalPaginas, totalImpresionesSinDescuento, descuento, totalFinal, manejarEnviarPedido,
-      modoOscuro, toggleModoOscuro, envio, setEnvio
+      modoOscuro, toggleModoOscuro, envio, setEnvio, domicilioCliente, setDomicilioCliente, localidadCliente, setLocalidadCliente,
     }}>
       {children}
     </GlobalContext.Provider>

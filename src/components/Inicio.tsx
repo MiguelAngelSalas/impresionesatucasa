@@ -32,11 +32,11 @@ export default function Inicio() {
       
       <div className="bg-white dark:bg-slate-800 border border-violet-200 dark:border-slate-700 rounded-xl shadow-lg dark:shadow-black/40 p-6 sm:p-8 text-center transition-all duration-300 hover:shadow-xl mb-10">
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 text-violet-800 dark:text-violet-400 tracking-tight transition-colors duration-300">
-          Impresión de Planchas de Stickers, Fotos y Etiquetas en <span className="text-violet-600 dark:text-violet-300 block sm:inline">Alta Calidad</span>
+          Impresión en Planchas de Stickers, Fotos y Etiquetas en <span className="text-violet-600 dark:text-violet-300 block sm:inline">Alta Calidad</span>
         </h1>
         
         <p className="text-base sm:text-lg text-gray-700 dark:text-slate-300 mb-4 max-w-3xl mx-auto transition-colors duration-300">
-          ¿Tenés tus diseños armados en Canva o Illustrator? Subí tu archivo PDF, elegí el papel fotográfico o autoadhesivo que necesites, y te lo mandamos impreso a tu casa.
+          ¿Tenés tus diseños armados en Canva o Illustrator? Subí tu archivo PDF, elegí el papel fotográfico o autoadhesivo que necesites, y te lo mandamos impreso a tu domicilio.
         </p>
         
         <div className="inline-block bg-violet-50 dark:bg-slate-900/50 border border-violet-100 dark:border-violet-900 rounded-lg p-3 mt-2 mb-4">

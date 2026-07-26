@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     default: "Impresión de Planchas de Stickers, tarjetas y Fotos | Envíos a Domicilio",
     template: "%s | Impresiones a tu Casa",
   },
-  description: "Impresión de planchas de stickers, etiquetas y fotos en alta calidad. Subí tu PDF (A4) y recibilo en tu casa. Ideal para emprendedores. Envíos a todo el país y Zona Sur.",
+  description: "Impresión de planchas de stickers, etiquetas y fotos en alta calidad. Subí tu PDF (A4) y recibilo en tu domicilio. Ideal para emprendedores. Envíos a todo el país y Zona Sur.",
   keywords: [
     "impresion de stickers", 
     "planchas de etiquetas", 

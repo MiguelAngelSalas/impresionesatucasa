@@ -2,7 +2,7 @@
 
 import { useContext, useState } from "react";
 import { GlobalContext } from "@/context/GlobalContext";
-import { Trash2, CheckCircle, ShoppingBag, User, Phone, Loader2 } from "lucide-react";
+import { Trash2, CheckCircle, ShoppingBag, User, Phone, MapPin, Loader2 } from "lucide-react";
 import SelectorEnvio from "@/components/SelectorEnvio"
 
 const formatoPrecio = (valor: number) =>
@@ -17,10 +17,11 @@ export default function ResumenCarrito() {
     manejarEnviarPedido,
     nombreCliente, setNombreCliente,
     telefonoCliente, setTelefonoCliente,
+    domicilioCliente, setDomicilioCliente,
     totalPaginas,
     totalImpresionesSinDescuento,
     descuento,
-    totalFinal
+    totalFinal, envio
   } = useContext(GlobalContext);
 
   const ejecutarPago = async () => {
@@ -97,6 +98,19 @@ export default function ResumenCarrito() {
                 className="w-full pl-10 p-2.5 border rounded-lg dark:bg-slate-700 dark:border-slate-600 outline-none focus:ring-2 focus:ring-violet-500 disabled:opacity-50"
               />
             </div>
+            {envio.nombre !== "Retiro en punto de encuentro (Gratis)"&&(
+              <div className="relative">
+              <MapPin className="absolute left-3 top-3 text-slate-400" size={18} />
+              <input 
+                type="text"
+                placeholder="Calle, numero, piso, localidad..."
+                value={domicilioCliente}
+                disabled={cargando}
+                onChange={(e) => setDomicilioCliente(e.target.value)}
+                className="w-full pl-10 p-2.5 border rounded-lg dark:bg-slate-700 dark:border-slate-600 outline-none focus:ring-2 focus:ring-violet-500 disabled:opacity-50"
+              />
+            </div>
+            )}
             <SelectorEnvio/>
           </div>
 
