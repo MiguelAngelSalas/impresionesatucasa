@@ -26,6 +26,8 @@ export default function SelectorPapel({ value, onChange }: SelectorPapelProps) {
       <option value="tatuajesTemporales">Tatuajes temporales</option>
       <option value="adhesivoComun">Autoadhesivo Comun 135 gr</option>
       <option value="adhesivoPremium">Autoadhesivo Premium 115 gr</option>
+      <option value="holografico">Autoadhesivo Holografico resistente al agua</option>
+
     </select>
   );
 }

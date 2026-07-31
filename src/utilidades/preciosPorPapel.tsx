@@ -17,6 +17,7 @@ const preciosPorPapel: PrecioPapel[] = [
   { id: "adhesivoComun", nombre: "Autoadhesivo común", precio: 1495 },
   { id: "adhesivoPremium", nombre: "Autoadhesivo Premium", precio: 1695 },
   { id: "styckers", nombre: "Autoadhesivo resistente al agua (Stickers)", precio: 2130 },
+  { id: "holografico", nombre: "Autoadhesivo Holografico resistente al agua ", precio: 2700 },
   { id: "tatuajesTemporales", nombre: "Plancha de tatuajes temporales", precio: 6000 },
 ];
 
