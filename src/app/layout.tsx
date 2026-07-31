@@ -46,13 +46,32 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           src="https://sdk.mercadopago.com/js/v2" 
           strategy="lazyOnload" 
         />
+        {/* 1. Google Tag (gtag.js) - Google Ads */}
+        <Script
+          strategy="afterInteractive"
+          src="https://www.googletagmanager.com/gtag/js?id=AW-18301421416"
+        />
+
+        {/* 2. Inicialización de Google Ads */}
+        <Script
+          id="google-ads-config"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'AW-18301421416');
+            `,
+          }}
+        />
       </head>
       <body className="min-h-screen flex flex-col">
         <GlobalProvider>
           <Header />
           <main className="grow">{children}</main>
           <Footer />
-          
+
           <Toaster 
             position="bottom-right"
             toastOptions={{
