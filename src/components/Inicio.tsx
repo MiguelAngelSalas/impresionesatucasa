@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Consultas from '@/components/Consultas'; 
+import { FileUp } from 'lucide-react';
 
 // 1. Definimos la estructura de una Resma para que TypeScript sea feliz
 interface Resma {
@@ -43,6 +44,16 @@ export default function Inicio() {
           <p className="text-sm sm:text-base text-violet-700 dark:text-violet-300 font-medium transition-colors duration-300">
             📌 Recordatorio: Para garantizar la mejor resolución, aceptamos únicamente archivos en formato PDF (Tamaño A4).
           </p>
+        </div>
+
+        <div className="mb-4">
+          <a
+            href="/upload"
+            className="inline-flex items-center justify-center gap-2 px-8 py-4 text-lg font-bold text-white bg-violet-600 rounded-xl shadow-lg hover:bg-violet-700 hover:shadow-violet-500/25 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-violet-300 dark:focus:ring-violet-800"
+          >
+            <FileUp className="w-6 h-6" />
+            <span>Subir mi archivo PDF</span>
+          </a>
         </div>
 
         <p className="text-sm text-gray-500 dark:text-slate-400 mt-2 transition-colors duration-300">
