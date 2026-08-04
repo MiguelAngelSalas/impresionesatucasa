@@ -1,40 +1,59 @@
 "use client"
 import Link from "next/link";
-// Cambiamos Bike por Truck
-import { Suspense,useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { CheckCircle2, FileText, PackageCheck, Truck } from "lucide-react"; 
 
+// Declaramos gtag en window para que TypeScript no se queje (si usás TS)
+declare global {
+  interface Window {
+    gtag?: (...args: any[]) => void;
+  }
+}
 
 function ContenidoExitoso() {
+  const router = useRouter();
+  const serchParams = useSearchParams();
 
-  const router = useRouter()
-  const serchParams = useSearchParams()
+  const [autorizado, setAutorizado] = useState(false);
+  const estadoPago = serchParams.get("collections_status");
+  
+  // Capturamos el ID de pago de MercadoPago para evitar conversiones duplicadas
+  const paymentId = serchParams.get("payment_id") || serchParams.get("collection_id") || "";
 
-  const [autorizado, setAutorizado] = useState(false)
-    const estadoPago = serchParams.get("collections_status")
+  const pagoAprovado = estadoPago === "approved";
 
-    const pagoAprovado = estadoPago==="approved"
-  useEffect(()=>{
-    
-    
-    if (!pagoAprovado){
-        router.push("/");
+  // 1. Redirección si el pago no está aprobado
+  useEffect(() => {
+    if (!pagoAprovado) {
+      router.push("/");
     }
-  }, [pagoAprovado, router])
-  if (!pagoAprovado){
+  }, [pagoAprovado, router]);
+
+  // 2. NUEVO: Disparo de conversión de Google Ads al aprobarse el pago
+  useEffect(() => {
+    if (pagoAprovado && typeof window !== "undefined" && typeof window.gtag === "function") {
+      window.gtag("event", "conversion", {
+        send_to: "AW-18301421416/hw7iCPrTy9scEOiO5pZE",
+        value: 1.0, // Acá podés poner tu ticket promedio en ARS o pasarlo dinámicamente
+        currency: "ARS",
+        transaction_id: paymentId, // ID único para que Google no duplique si refrescan la web
+      });
+    }
+  }, [pagoAprovado, paymentId]);
+
+  if (!pagoAprovado) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-slate-900">
         <div className="animate-pulse flex flex-col items-center">
-           {/* Un texto de carga sutil para que no quede la pantalla en blanco */}
-           <p className="text-violet-600 dark:text-violet-400 font-medium mt-4">Validando seguridad...</p>
+          <p className="text-violet-600 dark:text-violet-400 font-medium mt-4">Validando seguridad...</p>
         </div>
       </div>
     );
   }
+
   return (
     <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 transition-colors duration-300">
-      
       <div className="bg-white dark:bg-slate-800 border border-violet-200 dark:border-slate-700 rounded-xl shadow-lg dark:shadow-black/40 p-8 sm:p-12 text-center transition-all duration-300 hover:shadow-xl">
         
         <div className="flex justify-center mb-6">
@@ -55,7 +74,6 @@ function ContenidoExitoso() {
           
           <ul className="space-y-4">
             <li className="flex items-center text-gray-700 dark:text-slate-300 transition-colors duration-300">
-              {/* Icono con soporte oscuro: text-violet-600 en luz, dark:text-violet-400 en sombra */}
               <FileText className="w-6 h-6 text-violet-600 dark:text-violet-400 mr-4 shrink-0" />
               <span>Revisamos que el formato de tus documentos sea el correcto.</span>
             </li>
@@ -66,7 +84,6 @@ function ContenidoExitoso() {
             </li>
             
             <li className="flex items-center text-gray-700 dark:text-slate-300 transition-colors duration-300 font-medium">
-              {/* ACÁ ESTÁ EL CAMIÓN */}
               <Truck className="w-6 h-6 text-violet-600 dark:text-violet-400 mr-4 shrink-0" />
               <span>Te avisamos por WhatsApp apenas tu pedido sale para el domicilio.</span>
             </li>
