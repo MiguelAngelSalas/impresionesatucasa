@@ -1,8 +1,8 @@
 // src/components/DetallePrecio.tsx
 
-import { FileText, Tag, DollarSign, Gift } from "lucide-react";
+import { FileText, Tag, DollarSign, Gift, Book } from "lucide-react";
 
-// 1. Diccionario de nombres
+// Diccionario de nombres
 const nombresPapel: Record<string, string> = {
   comunByN: "Papel obra 80gr blanco y negro",
   fotoFino: "Foto fino 140 Grs",
@@ -24,16 +24,23 @@ interface DetallePrecioProps {
   tipoPapel: string | null;
   precioSinDescuento: number;
   descuento: number;
+  quiereAnillado?: boolean;
+  costoAnillado?: number;
 }
 
 export default function DetallePrecio({ 
   totalPaginas, 
   tipoPapel, 
   precioSinDescuento, 
-  descuento 
+  descuento,
+  quiereAnillado = false,
+  costoAnillado = 0
 }: DetallePrecioProps) {
   
   if (!totalPaginas || !tipoPapel) return null;
+
+  // Sumamos el costo del anillado al precio base si lo seleccionó
+  const totalEstimado = precioSinDescuento + (quiereAnillado ? costoAnillado : 0);
 
   return (
     <div className="bg-violet-50 dark:bg-slate-800/50 border border-violet-100 dark:border-slate-600/50 rounded-lg p-5 text-violet-800 dark:text-violet-200 text-sm sm:text-base space-y-4 transition-colors duration-300 shadow-sm mt-4">
@@ -48,9 +55,17 @@ export default function DetallePrecio({
         <p>Papel: <span className="font-bold">{formatearTipoPapel(tipoPapel)}</span></p>
       </div>
 
-      <div className="flex items-center gap-3">
+      {/* Fila del Anillado (Solo aparece si lo marcó) */}
+      {quiereAnillado && (
+        <div className="flex items-center gap-3 text-violet-700 dark:text-violet-300">
+          <Book size={20} className="text-violet-600 dark:text-violet-400" />
+          <p>Anillado: <span className="font-bold">+${costoAnillado.toFixed(2)}</span></p>
+        </div>
+      )}
+
+      <div className="flex items-center gap-3 pt-2">
         <DollarSign size={20} className="text-violet-600 dark:text-violet-400" />
-        <p>Precio estimado: <span className="font-bold">${precioSinDescuento.toFixed(2)}</span></p>
+        <p>Precio estimado: <span className="font-bold">${totalEstimado.toFixed(2)}</span></p>
       </div>
       
       {descuento > 0 && (

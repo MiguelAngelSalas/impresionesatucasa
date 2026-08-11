@@ -1,3 +1,5 @@
+// src/components/VistaFormulario.tsx (o la ruta donde lo tengas)
+
 "use client";
 
 import { useState, useContext } from "react";
@@ -5,6 +7,7 @@ import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf";
 import { GlobalContext } from "@/context/GlobalContext";
 import { calcularDescuento } from "@/utilidades/calcularDescuento"; 
 import preciosPorPapel from "@/utilidades/preciosPorPapel"; 
+import { calcularAnillado } from "@/utilidades/anillados"; 
 
 import CargadorArchivo from "./CargadorArchivo";
 import DatosCliente from "./DatosCliente";
@@ -27,7 +30,8 @@ export default function VistaFormulario() {
   const [totalPaginas, setTotalPaginas] = useState<number | null>(null);
   const [tipoPapel, setTipoPapel] = useState("");
   const [estado, setEstado] = useState<string>("");
-  const [cantidadCopias, setCantidadCopias] = useState<number>(1); // <-- Estado de copias
+  const [cantidadCopias, setCantidadCopias] = useState<number>(1); 
+  const [quiereAnillado, setQuiereAnillado] = useState(false);
 
   // --- 1. Lógica Matemática de Precios ---
   const papelSeleccionado = preciosPorPapel.find((p) => p.id === tipoPapel);
@@ -35,13 +39,12 @@ export default function VistaFormulario() {
   
   const paginasTotalesAImprimir = (totalPaginas || 0) * cantidadCopias; 
   const precioSinDescuento = paginasTotalesAImprimir * precioUnitario;
-  
-  // Para la vista previa del formulario calculamos el descuento
   const descuentoPrevio = calcularDescuento(paginasTotalesAImprimir);
-  
-  // EL CAMBIO CLAVE: Para el carrito, necesitamos el precio base de UNA copia, SIN descuento.
-  // El GlobalContext se encargará de aplicar el descuento al final.
   const precioBasePorCopia = (totalPaginas || 0) * precioUnitario;
+
+  // Lógica de Anillado en tiempo real
+  const anilladoRecomendado = calcularAnillado(totalPaginas || 0);
+  const costoAnillado = quiereAnillado && anilladoRecomendado ? anilladoRecomendado.precio : 0;
 
   const manejarCambioArchivo = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -52,7 +55,8 @@ export default function VistaFormulario() {
       const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
       setTotalPaginas(pdf.numPages);
       setArchivo(file);
-      setCantidadCopias(1); // Reseteamos copias al subir archivo nuevo
+      setCantidadCopias(1); 
+      setQuiereAnillado(false); // Reseteamos el anillado por las dudas
       setEstado(`✅ Archivo listo: ${pdf.numPages} páginas.`);
     } catch (err) {
       setEstado("❌ Error al procesar el PDF.");
@@ -60,25 +64,30 @@ export default function VistaFormulario() {
   };
 
   // --- 2. Función Real del Carrito ---
-  const manejarAgregarAlCarrito = () => {
+  const manejarAgregarAlCarrito = (datosExtras: { quiereAnillado: boolean, costoAnillado: number }) => {
     if (!archivo || !tipoPapel || !totalPaginas) {
       setEstado("⚠️ Faltan datos (archivo o tipo de papel).");
       return;
     }
 
-    // Armamos el producto tal cual lo exige TypeScript
+    // Le sumamos al precio base el costo del anillado (si lo pidió)
+    const precioBaseFinal = precioBasePorCopia + datosExtras.costoAnillado;
+    const extraNombre = datosExtras.quiereAnillado ? '+ Anillado' : '';
+
     agregarAlCarrito({
       id: `${archivo.name}-${tipoPapel}-${totalPaginas}-${Date.now()}`,
-      name: `Impresión PDF (${tipoPapel}) - ${totalPaginas} págs`,
-      price: precioBasePorCopia,
+      name: `Impresión PDF (${tipoPapel}) - ${totalPaginas} págs ${extraNombre}`,
+      price: precioBaseFinal,
       cantidad: cantidadCopias,
       detalles: { 
         tipo: 'impresion', 
         paginas: totalPaginas,
-        // @ts-ignore - Ignoramos error temporal si File choca con el tipo
+        // @ts-ignore
         archivo: archivo, 
         copias: cantidadCopias,
-        papel:tipoPapel,
+        papel: tipoPapel,
+        quiereAnillado: datosExtras.quiereAnillado,
+        costoAnillado: datosExtras.costoAnillado
       }
     });
 
@@ -87,6 +96,7 @@ export default function VistaFormulario() {
     setTotalPaginas(null);
     setCantidadCopias(1);
     setTipoPapel("");
+    setQuiereAnillado(false);
   };
 
   return (
@@ -118,25 +128,28 @@ export default function VistaFormulario() {
           </div>
           
           <DatosCliente 
-  tipoPapel={tipoPapel} 
-  setTipoPapel={setTipoPapel} 
-/>
+            tipoPapel={tipoPapel} 
+            setTipoPapel={setTipoPapel} 
+          />
 
           <MensajeEstado estado={estado} />
           
           <DetallePrecio 
-            totalPaginas={paginasTotalesAImprimir} // Pasamos el total multiplicado
+            totalPaginas={paginasTotalesAImprimir}
             tipoPapel={tipoPapel || null} 
             precioSinDescuento={precioSinDescuento} 
             descuento={descuentoPrevio}
+            quiereAnillado={quiereAnillado}
+            costoAnillado={costoAnillado}
           />
           
           <FormularioEnvio 
             estado={estado}
+            cantidadHojas={totalPaginas || 0} 
             manejarAgregarAlCarrito={manejarAgregarAlCarrito}
-            manejarEnvio={async () => {
-              //console.log("Iniciando flujo de pago...");
-            }}
+            manejarEnvio={async () => {}}
+            quiereAnillado={quiereAnillado}
+            setQuiereAnillado={setQuiereAnillado}
           />
         </div>
       </div>

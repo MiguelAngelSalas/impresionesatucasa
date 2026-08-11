@@ -1,9 +1,11 @@
+// src/components/ResumenCarrito.tsx
 "use client";
 
 import { useContext, useState } from "react";
 import { GlobalContext } from "@/context/GlobalContext";
 import { Trash2, CheckCircle, ShoppingBag, User, Phone, MapPin, Loader2 } from "lucide-react";
-import SelectorEnvio from "@/components/SelectorEnvio"
+import SelectorEnvio from "@/components/SelectorEnvio";
+import SeccionCodigo from "@/components/SeccionCodigo"; // <-- NUEVA IMPORTACIÓN
 
 const formatoPrecio = (valor: number) =>
   valor.toLocaleString("es-AR", { style: "currency", currency: "ARS" });
@@ -21,7 +23,9 @@ export default function ResumenCarrito() {
     totalPaginas,
     totalImpresionesSinDescuento,
     descuento,
-    totalFinal, envio
+    totalFinal, 
+    envio,
+    envioGratis // <-- EXTRAEMOS ESTO DEL CONTEXTO
   } = useContext(GlobalContext);
 
   const ejecutarPago = async () => {
@@ -98,29 +102,65 @@ export default function ResumenCarrito() {
                 className="w-full pl-10 p-2.5 border rounded-lg dark:bg-slate-700 dark:border-slate-600 outline-none focus:ring-2 focus:ring-violet-500 disabled:opacity-50"
               />
             </div>
-            {envio.nombre !== "Retiro en punto de encuentro (Gratis)"&&(
+            
+            {envio.nombre !== "Retiro en punto de encuentro (Gratis)" && (
               <div className="relative">
-              <MapPin className="absolute left-3 top-3 text-slate-400" size={18} />
-              <input 
-                type="text"
-                placeholder="Calle, numero, piso, localidad..."
-                value={domicilioCliente}
-                disabled={cargando}
-                onChange={(e) => setDomicilioCliente(e.target.value)}
-                className="w-full pl-10 p-2.5 border rounded-lg dark:bg-slate-700 dark:border-slate-600 outline-none focus:ring-2 focus:ring-violet-500 disabled:opacity-50"
-              />
-            </div>
+                <MapPin className="absolute left-3 top-3 text-slate-400" size={18} />
+                <input 
+                  type="text"
+                  placeholder="Calle, numero, piso, localidad..."
+                  value={domicilioCliente}
+                  disabled={cargando}
+                  onChange={(e) => setDomicilioCliente(e.target.value)}
+                  className="w-full pl-10 p-2.5 border rounded-lg dark:bg-slate-700 dark:border-slate-600 outline-none focus:ring-2 focus:ring-violet-500 disabled:opacity-50"
+                />
+              </div>
             )}
-            <SelectorEnvio/>
+            
+            <SelectorEnvio />
+
+            {/* ACA RENDERIZAMOS EL COMPONENTE DE CÓDIGO */}
+            {envio.nombre !== "Retiro en punto de encuentro (Gratis)" && (
+              <SeccionCodigo />
+            )}
+            
           </div>
 
           <div className="mt-6 border-t pt-4 text-sm space-y-2">
-            <p>Total páginas: <strong>{totalPaginas}</strong></p>
-            <p>Subtotal: <strong>{formatoPrecio(totalImpresionesSinDescuento)}</strong></p>
-            <p>Descuento aplicado: <strong>{(descuento * 100).toFixed(0)}%</strong></p>
-            <p className="text-lg font-bold text-violet-800 dark:text-violet-300">
-              Total a pagar: {formatoPrecio(totalFinal)}
+            <p className="flex justify-between">
+              <span>Total páginas:</span>
+              <strong>{totalPaginas}</strong>
             </p>
+            <p className="flex justify-between">
+              <span>Subtotal impresiones:</span>
+              <strong>{formatoPrecio(totalImpresionesSinDescuento)}</strong>
+            </p>
+            
+            {descuento > 0 && (
+              <p className="flex justify-between text-green-600 dark:text-green-400">
+                <span>Descuento aplicado por cantidad:</span>
+                <strong>- {(descuento * 100).toFixed(0)}%</strong>
+              </p>
+            )}
+
+            {/* Muestra costo de envío o GRATIS si puso el código */}
+            {envio.nombre !== "Retiro en punto de encuentro (Gratis)" && (
+              <p className="flex justify-between">
+                <span>Costo de envío ({envio.nombre}):</span>
+                {envioGratis ? (
+                  <strong className="text-green-600 dark:text-green-400">¡BONIFICADO!</strong>
+                ) : (
+                  <strong>{formatoPrecio(envio.costo || 0)}</strong>
+                )}
+              </p>
+            )}
+
+            <div className="border-t pt-3 mt-3">
+              <p className="text-lg font-bold text-violet-800 dark:text-violet-300 flex justify-between">
+                <span>Total a pagar:</span>
+                <span>{formatoPrecio(totalFinal)}</span>
+              </p>
+            </div>
           </div>
 
           <button 
