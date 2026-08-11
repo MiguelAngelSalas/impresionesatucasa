@@ -1,3 +1,4 @@
+// src/context/GlobalContext.tsx
 "use client";
 
 import React, { createContext, useState, useEffect, ReactNode, Dispatch, SetStateAction } from "react";
@@ -15,13 +16,15 @@ export interface Producto {
     archivoUrl?: string; 
     papel?: string;
     copias?: number;
+    quiereAnillado?: boolean;
+    costoAnillado?: number;
   };
   cantidad: number;
 }
 
-export interface  TipoEnvio{
+export interface TipoEnvio{
   nombre: string,
-  costo: number
+  costo: number,
 }
 
 export interface GlobalContextType {
@@ -45,12 +48,13 @@ export interface GlobalContextType {
   modoOscuro: boolean;
   toggleModoOscuro: () => void;
   envio: TipoEnvio;
-  setEnvio: Dispatch<SetStateAction<TipoEnvio>>
-
+  setEnvio: Dispatch<SetStateAction<TipoEnvio>>;
+  envioGratis: boolean;
+  setEnvioGratis: (valor: boolean) => void;
+  // NUEVO: Para guardar qué código exacto se usó
+  codigoAplicado: string;
+  setCodigoAplicado: Dispatch<SetStateAction<string>>;
 }
-
-
-
 
 export const GlobalContext = createContext<GlobalContextType>({} as GlobalContextType);
 
@@ -59,10 +63,12 @@ export function GlobalProvider({ children }: { children: ReactNode }) {
   const [nombreCliente, setNombreCliente] = useState("");
   const [telefonoCliente, setTelefonoCliente] = useState("");
   const [modoOscuro, setModoOscuro] = useState(false);
-  const [envio, setEnvio] = useState<TipoEnvio>({nombre: "Retiro en punto de encuentro (Gratis)", costo: 0})
+  const [envio, setEnvio] = useState<TipoEnvio>({nombre: "Retiro en punto de encuentro (Gratis)", costo: 0});
   const [domicilioCliente, setDomicilioCliente] = useState("");
   const [localidadCliente, setLocalidadCliente] = useState("");
-
+  const [envioGratis, setEnvioGratis] = useState<boolean>(false);
+  // NUEVO: Estado para el código
+  const [codigoAplicado, setCodigoAplicado] = useState<string>("");
 
   const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
@@ -87,13 +93,12 @@ export function GlobalProvider({ children }: { children: ReactNode }) {
   const totalPaginas = impresiones.reduce((acc, i) => acc + (i.detalles?.paginas || 0) * i.cantidad, 0);
   const totalImpresionesSinDescuento = impresiones.reduce((acc, i) => acc + (i.price * i.cantidad), 0);
   const descuento = calcularDescuento(totalPaginas);
-  const montoDescuento = totalImpresionesSinDescuento* descuento
-  const totalFinal = totalImpresionesSinDescuento -montoDescuento ;
-  const precioEnvio = envio.costo
-
+  const montoDescuento = totalImpresionesSinDescuento * descuento;
+  const precioEnvio = envioGratis ? 0 : envio.costo;
+  const totalFinal = (totalImpresionesSinDescuento - montoDescuento) + precioEnvio;
+  
   const manejarEnviarPedido = async () => {
-
-    const esEnvio = envio.nombre!== "Retiro en punto de encuentro (Gratis)"
+    const esEnvio = envio.nombre !== "Retiro en punto de encuentro (Gratis)";
 
     if (!nombreCliente.trim() || !telefonoCliente.trim() || carrito.length === 0 || (esEnvio && (!domicilioCliente.trim() || !localidadCliente.trim()))) {
       toast.error("⚠️ Faltan datos: Asegurate de ingresar tu nombre, teléfono y tener productos en el carrito.");
@@ -149,11 +154,16 @@ export function GlobalProvider({ children }: { children: ReactNode }) {
         body: JSON.stringify({
             cliente: nombreCliente.trim(),
             telefono: telefonoCliente.trim(),
-            domicilio: esEnvio ? domicilioCliente.trim(): "Con envio",
-            localidad: esEnvio ? localidadCliente.trim(): "Retiro en punto de encuentro (Gratis)",
+            // NUEVO: Le sumamos el aviso al domicilio para que lo leas rápido
+            domicilio: esEnvio 
+              ? `${domicilioCliente.trim()} ${envioGratis ? `(🎁 CÓDIGO: ${codigoAplicado})` : ""}`
+              : "Con envio",
+            localidad: esEnvio ? localidadCliente.trim() : "Retiro en punto de encuentro (Gratis)",
             pedido: { items: itemsProcesados },
             precioEnvio: precioEnvio,
-            montoDescuento: montoDescuento
+            montoDescuento: montoDescuento,
+            // NUEVO: Lo pasamos al backend (opcional, para tener el registro)
+            codigoUsado: envioGratis ? codigoAplicado : null
         }),
       });
 
@@ -161,21 +171,25 @@ export function GlobalProvider({ children }: { children: ReactNode }) {
 
       const data = await response.json();
       
-      // Quitamos el loading una vez obtenido el resultado
       toast.dismiss(loadingToast);
       
       if (data.initPoint) {
-        // Mostramos el mensaje de éxito antes de redirigir
         toast.success("¡Pedido exitoso! Redirigiendo a pago...");
         
+        // NUEVO: Guardamos el código en localStorage ANTES de ir a MercadoPago
+        if (envioGratis && codigoAplicado) {
+          localStorage.setItem("codigoDescuentoEnUso", codigoAplicado);
+        }
+
         // Limpiamos los campos
         setNombreCliente("");
         setTelefonoCliente("");
         setDomicilioCliente("");
         setLocalidadCliente("");
+        setEnvioGratis(false);
+        setCodigoAplicado(""); // Limpiamos el código
         vaciarCarrito();
         
-        // Pequeña pausa para que el usuario pueda ver el toast
         setTimeout(() => {
             window.location.href = data.initPoint;
         }, 1500);
@@ -185,6 +199,8 @@ export function GlobalProvider({ children }: { children: ReactNode }) {
         setTelefonoCliente("");
         setDomicilioCliente("");
         setLocalidadCliente("");
+        setEnvioGratis(false);
+        setCodigoAplicado(""); // Limpiamos el código
         vaciarCarrito();
       }
 
@@ -201,6 +217,8 @@ export function GlobalProvider({ children }: { children: ReactNode }) {
       nombreCliente, setNombreCliente, telefonoCliente, setTelefonoCliente,
       totalPaginas, totalImpresionesSinDescuento, descuento, totalFinal, manejarEnviarPedido,
       modoOscuro, toggleModoOscuro, envio, setEnvio, domicilioCliente, setDomicilioCliente, localidadCliente, setLocalidadCliente,
+      envioGratis, setEnvioGratis,
+      codigoAplicado, setCodigoAplicado // NUEVO: Pasamos las variables al provider
     }}>
       {children}
     </GlobalContext.Provider>

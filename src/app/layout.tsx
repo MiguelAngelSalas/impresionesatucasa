@@ -40,7 +40,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="es">
+    <html lang="es" suppressHydrationWarning>
       <head>
         <Script 
           src="https://sdk.mercadopago.com/js/v2" 
