@@ -18,7 +18,7 @@ export interface Producto {
     quiereAnillado?: boolean;
     costoAnillado?: number;
     esPDF?: boolean;
-    tamanioSeleccionado: string;
+    tamanioSeleccionado?: string;
   };
   cantidad: number;
 }
