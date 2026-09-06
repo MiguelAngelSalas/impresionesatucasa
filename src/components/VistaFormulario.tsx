@@ -34,7 +34,20 @@ export default function VistaFormulario() {
   const [esPDF, setEsPDF] = useState(false);
   
   // --- ESTADO DEL VISOR ESTILO WINDOWS ---
-  const [fotosPorHoja, setFotosPorHoja] = useState<number>(2); 
+  const [tamanioFotoId, setTamanioFotoId] = useState<string>("10x15"); 
+
+  // Diccionario centralizado de tamaños
+  const OPCIONES_TAMANO: Record<string, { fotos: number, texto: string }> = {
+    "A4": { fotos: 1, texto: "Página completa (1 foto por hoja A4)" },
+    "10x15": { fotos: 2, texto: "10 x 15 cm (2 fotos por hoja A4)" },
+    "13x18": { fotos: 2, texto: "13 x 18 cm (2 fotos por hoja A4)" },
+    "9x13": { fotos: 4, texto: "9 x 13 cm (4 fotos por hoja A4)" },
+    "billetera": { fotos: 9, texto: "Billetera / Contacto (9 fotos por hoja A4)" },
+    "miniaturas": { fotos: 35, texto: "Miniaturas (35 fotos por hoja A4)" }
+  };
+
+  // Derivamos el número para la matemática dinámicamente
+  const fotosPorHoja = OPCIONES_TAMANO[tamanioFotoId].fotos;
 
   const [totalPaginas, setTotalPaginas] = useState<number | null>(null);
   const [tipoPapel, setTipoPapel] = useState("");
@@ -64,7 +77,6 @@ export default function VistaFormulario() {
       : Math.ceil((archivosGuardados.length * cantidadCopias) / fotosPorHoja);
 
   // 2. Hojas FÍSICAS de UNA SOLA COPIA para calcular el grosor del ANILLADO
-  // Si es PDF, dividimos por 2 (redondeando arriba) porque va doble faz.
   const hojasFisicasPorCopia = esPDF 
       ? Math.ceil((totalPaginas || 0) / 2) 
       : Math.ceil(archivosGuardados.length / fotosPorHoja);
@@ -91,16 +103,10 @@ export default function VistaFormulario() {
     const nombreProducto = esPDF 
         ? 'Impresión PDF' 
         : `Impresión Fotos (x${fotosPorHoja} por hoja) - Total: ${paginasTotalesAImprimir} planchas`;
-
-    const descripcionesTamano: Record<number, string> = {
-      1: "Página completa (1 foto por hoja A4)",
-      2: "10 x 15 cm o 13 x 18 cm (2 fotos por hoja A4)",
-      4: "9 x 13 cm (4 fotos por hoja A4)",
-      9: "Billetera / Contacto (9 fotos por hoja A4)",
-      35: "Miniaturas (35 fotos por hoja A4)"
-    };
     
-    const textoTamañoElegido = esPDF ? "Documento PDF (A4 Estandar)" : (descripcionesTamano[fotosPorHoja] || `Fotos x${fotosPorHoja} por hoja`);
+    const textoTamañoElegido = esPDF 
+        ? "Documento PDF (A4 Estandar)" 
+        : OPCIONES_TAMANO[tamanioFotoId].texto;
 
     agregarAlCarrito({
       id: `${archivosGuardados[0].name}-${tipoPapel}-${Date.now()}`,
@@ -259,15 +265,15 @@ export default function VistaFormulario() {
                 </label>
                 <select 
                   className="p-2.5 border rounded-lg bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 outline-none focus:border-violet-500"
-                  value={fotosPorHoja}
-                  onChange={(e) => setFotosPorHoja(parseInt(e.target.value))}
+                  value={tamanioFotoId}
+                  onChange={(e) => setTamanioFotoId(e.target.value)}
                 >
-                  <option value="1">Página completa (1 foto por hoja A4)</option>
-                  <option value="2">10 x 15 cm o 13 x 18 cm (2 fotos por hoja A4)</option>
-                  <option value="2">13 x 18 cm (2 fotos por hoja A4)</option>
-                  <option value="4">9 x 13 cm (4 fotos por hoja A4)</option>
-                  <option value="9">Billetera / Contacto (9 fotos por hoja A4)</option>
-                  <option value="35">Miniaturas (35 fotos por hoja A4)</option>
+                  <option value="A4">Página completa (1 foto por hoja A4)</option>
+                  <option value="10x15">10 x 15 cm (2 fotos por hoja A4)</option>
+                  <option value="13x18">13 x 18 cm (2 fotos por hoja A4)</option>
+                  <option value="9x13">9 x 13 cm (4 fotos por hoja A4)</option>
+                  <option value="billetera">Billetera / Contacto (9 fotos por hoja A4)</option>
+                  <option value="miniaturas">Miniaturas (35 fotos por hoja A4)</option>
                 </select>
               </div>
             )}
@@ -301,7 +307,6 @@ export default function VistaFormulario() {
           
           <FormularioEnvio 
             estado={estado}
-            // 👈 PASAMOS LAS HOJAS FÍSICAS DE 1 COPIA PARA QUE EL COMPONENTE NO SE ROMPA CON LOS LÍMITES (Ej: 500 hojas)
             cantidadHojas={hojasFisicasPorCopia || 0} 
             manejarAgregarAlCarrito={manejarAgregarAlCarrito}
             manejarEnvio={async () => {}}
