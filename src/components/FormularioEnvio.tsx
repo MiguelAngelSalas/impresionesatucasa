@@ -48,6 +48,7 @@ export default function FormularioEnvio({
               Anillado
             </span>
             
+            
             {cantidadHojas === 0 ? (
               <span className="text-sm text-gray-500">
                 Ingresá la cantidad de hojas primero.

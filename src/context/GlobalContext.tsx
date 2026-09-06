@@ -12,12 +12,13 @@ export interface Producto {
   detalles: { 
     tipo: 'impresion' | 'resma'; 
     paginas?: number;
-    archivo?: File; 
-    archivoUrl?: string; 
+    archivos?: File[] | string[]; 
     papel?: string;
     copias?: number;
     quiereAnillado?: boolean;
     costoAnillado?: number;
+    esPDF?: boolean;
+    tamanioSeleccionado: string;
   };
   cantidad: number;
 }
@@ -51,7 +52,6 @@ export interface GlobalContextType {
   setEnvio: Dispatch<SetStateAction<TipoEnvio>>;
   envioGratis: boolean;
   setEnvioGratis: (valor: boolean) => void;
-  // NUEVO: Para guardar qué código exacto se usó
   codigoAplicado: string;
   setCodigoAplicado: Dispatch<SetStateAction<string>>;
 }
@@ -67,7 +67,6 @@ export function GlobalProvider({ children }: { children: ReactNode }) {
   const [domicilioCliente, setDomicilioCliente] = useState("");
   const [localidadCliente, setLocalidadCliente] = useState("");
   const [envioGratis, setEnvioGratis] = useState<boolean>(false);
-  // NUEVO: Estado para el código
   const [codigoAplicado, setCodigoAplicado] = useState<string>("");
 
   const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
@@ -105,43 +104,56 @@ export function GlobalProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    const loadingToast = toast.loading("Subiendo archivos y procesando pedido...");
+    const loadingToast = toast.loading("Subiendo archivos a la nube y procesando pedido...");
 
     try {
       const itemsProcesados = [];
+      
+      // Creamos la carpeta única para este pedido en R2
+      const idDeCarpeta = `${nombreCliente.trim().replace(/\s+/g, "_")}_${Date.now()}`;
+
+      // Definí los datos de tu cuenta de Cloudflare (reemplazá con tus valores reales)
+      const accountId = "007c35fc1d8a0036f67dbf93b49e4a62"; 
+      const bucketName = "impresiones-a-tu-casa";
+      const linkDirectorioR2 = `https://dash.cloudflare.com/${accountId}/r2/default/buckets/${bucketName}?prefix=pedidos%2F${idDeCarpeta}%2F`;
 
       for (const producto of carrito) {
-        if (producto.detalles?.tipo === "impresion" && producto.detalles?.archivo) {
-          const file = producto.detalles.archivo as File;
-
-          const respuestaFirma = await fetch(`${API_BASE}/api/pedidos/firma-r2`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              nombreArchivo: file.name,
-              tipoArchivo: file.type,
-            }),
-          });
-
-          if (!respuestaFirma.ok) {
-            const errorText = await respuestaFirma.text();
-            console.error("Error al obtener firma:", respuestaFirma.status, errorText);
-            throw new Error(`Servidor respondió: ${respuestaFirma.status}`);
-          }
+        if (producto.detalles?.tipo === "impresion" && producto.detalles?.archivos && Array.isArray(producto.detalles.archivos)) {
           
-          const { urlFirma, fileKey } = await respuestaFirma.json();
+          for (let i = 0; i < producto.detalles.archivos.length; i++) {
+            const file = producto.detalles.archivos[i] as File;
+            
+            // Solicitud de la firma mandando el idPedido para estructurar la ruta
+            const respuestaFirma = await fetch(`${API_BASE}/api/pedidos/firma-r2`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                nombreArchivo: file.name.replace(/\s+/g, '_'),
+                tipoArchivo: file.type,
+                idPedido: idDeCarpeta 
+              }),
+            });
 
-          const respuestaR2 = await fetch(urlFirma, {
-            method: "PUT",
-            headers: { "Content-Type": file.type },
-            body: file,
-          });
+            if (!respuestaFirma.ok) throw new Error(`Fallo firma del archivo ${file.name}`);
+            const { urlFirma } = await respuestaFirma.json();
 
-          if (!respuestaR2.ok) throw new Error("Falló la subida a Cloudflare R2.");
+            // Subida directa del archivo binario a R2
+            const respuestaR2 = await fetch(urlFirma, {
+              method: "PUT",
+              headers: { "Content-Type": file.type },
+              body: file,
+            });
 
+            if (!respuestaR2.ok) throw new Error(`Falló subida de ${file.name} a R2.`);
+          }
+
+          // Guardamos el link limpio de la carpeta en lugar del listado con barras
           itemsProcesados.push({
             ...producto,
-            detalles: { ...producto.detalles, archivo: fileKey },
+            detalles: { 
+              ...producto.detalles, 
+              archivo: linkDirectorioR2 
+            },
           });
         } else {
           itemsProcesados.push(producto);
@@ -154,7 +166,6 @@ export function GlobalProvider({ children }: { children: ReactNode }) {
         body: JSON.stringify({
             cliente: nombreCliente.trim(),
             telefono: telefonoCliente.trim(),
-            // NUEVO: Le sumamos el aviso al domicilio para que lo leas rápido
             domicilio: esEnvio 
               ? `${domicilioCliente.trim()} ${envioGratis ? `(🎁 CÓDIGO: ${codigoAplicado})` : ""}`
               : "Con envio",
@@ -162,52 +173,34 @@ export function GlobalProvider({ children }: { children: ReactNode }) {
             pedido: { items: itemsProcesados },
             precioEnvio: precioEnvio,
             montoDescuento: montoDescuento,
-            // NUEVO: Lo pasamos al backend (opcional, para tener el registro)
-            codigoUsado: envioGratis ? codigoAplicado : null
+            codigoUsado: envioGratis ? codigoAplicado : null,
         }),
       });
 
       if (!response.ok) throw new Error("Error al crear el pedido en el servidor.");
 
       const data = await response.json();
-      
       toast.dismiss(loadingToast);
       
       if (data.initPoint) {
         toast.success("¡Pedido exitoso! Redirigiendo a pago...");
-        
-        // NUEVO: Guardamos el código en localStorage ANTES de ir a MercadoPago
         if (envioGratis && codigoAplicado) {
           localStorage.setItem("codigoDescuentoEnUso", codigoAplicado);
         }
-
-        // Limpiamos los campos
-        setNombreCliente("");
-        setTelefonoCliente("");
-        setDomicilioCliente("");
-        setLocalidadCliente("");
-        setEnvioGratis(false);
-        setCodigoAplicado(""); // Limpiamos el código
-        vaciarCarrito();
         
-        setTimeout(() => {
-            window.location.href = data.initPoint;
-        }, 1500);
+        setNombreCliente(""); setTelefonoCliente(""); setDomicilioCliente(""); setLocalidadCliente("");
+        setEnvioGratis(false); setCodigoAplicado(""); vaciarCarrito();
+        
+        setTimeout(() => { window.location.href = data.initPoint; }, 1500);
       } else {
-        toast.success("🚀 Pedido enviado. ¡Nos contactaremos pronto!");
-        setNombreCliente("");
-        setTelefonoCliente("");
-        setDomicilioCliente("");
-        setLocalidadCliente("");
-        setEnvioGratis(false);
-        setCodigoAplicado(""); // Limpiamos el código
+        toast.success("🚀 Pedido enviado.");
         vaciarCarrito();
       }
 
     } catch (error) {
       console.error("❌ Error completo:", error);
       toast.dismiss(loadingToast);
-      toast.error("❌ Error: Verifica la conexión con el servidor.");
+      toast.error("❌ Error: Verifica la conexión al subir los archivos.");
     }
   };
 
@@ -218,7 +211,7 @@ export function GlobalProvider({ children }: { children: ReactNode }) {
       totalPaginas, totalImpresionesSinDescuento, descuento, totalFinal, manejarEnviarPedido,
       modoOscuro, toggleModoOscuro, envio, setEnvio, domicilioCliente, setDomicilioCliente, localidadCliente, setLocalidadCliente,
       envioGratis, setEnvioGratis,
-      codigoAplicado, setCodigoAplicado // NUEVO: Pasamos las variables al provider
+      codigoAplicado, setCodigoAplicado
     }}>
       {children}
     </GlobalContext.Provider>
