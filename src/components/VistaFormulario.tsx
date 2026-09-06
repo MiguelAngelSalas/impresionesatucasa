@@ -264,6 +264,7 @@ export default function VistaFormulario() {
                 >
                   <option value="1">Página completa (1 foto por hoja A4)</option>
                   <option value="2">10 x 15 cm o 13 x 18 cm (2 fotos por hoja A4)</option>
+                  <option value="2">13 x 18 cm (2 fotos por hoja A4)</option>
                   <option value="4">9 x 13 cm (4 fotos por hoja A4)</option>
                   <option value="9">Billetera / Contacto (9 fotos por hoja A4)</option>
                   <option value="35">Miniaturas (35 fotos por hoja A4)</option>
